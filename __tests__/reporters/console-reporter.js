@@ -134,8 +134,7 @@ test('ConsoleReporter.activity', async () => {
 });
 
 test('ConsoleReporter.select', async () => {
-  expect(
-    await getConsoleBuff(async function(r, streams): Promise<void> {
+  const output = await getConsoleBuff(async function(r, streams): Promise<void> {
       streams.stdin.on('resume', function() {
         streams.stdin.send('1\n', 'ascii');
         streams.stdin.end();
@@ -152,8 +151,11 @@ test('ConsoleReporter.select', async () => {
         },
       ]);
       expect(res).toBe('foo');
-    }),
-  ).toMatchSnapshot();
+    });
+  // readline emits cursor positioning on Linux but not every macOS stream.
+  // Preserve the prompt, choices, colors and selected value in this snapshot.
+  output.stdout = output.stdout.replace(/\x1b\[1G\x1b\[0J/g, '').replace(/\x1b\[13G/g, '');
+  expect(output).toMatchSnapshot();
 });
 
 test('ConsoleReporter.progress', async () => {
