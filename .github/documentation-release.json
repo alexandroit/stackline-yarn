@@ -4,7 +4,7 @@
     {
       "name": "@stackline/yarn",
       "path": "README.md",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "baselineVersion": "1.0.0",
       "keywords": [
         "stackline",
@@ -15,8 +15,8 @@
       "homepage": "https://alexandro.net/docs/vanilla/yarn/",
       "baselineTarball": "https://registry.npmjs.org/@stackline/yarn/-/yarn-1.0.0.tgz",
       "baselineIntegrity": "sha512-aJQzZsgh10qN4JW1jYkc/wz1WSJxxtSntLOCcw8RIwzYpK5kWqkF/cLCsGqxuBsRo9do2f+bQ/kaHFe+ILuJPw==",
-      "expectedSha512": "d34be41e3cee28908ee8885085d4492eb483542105ba8b5ef2bd04cf43270d24b491eba5e239b3f14b2aa06c4391441f76ebe35cfce9860ad299d488b27bb9a3",
-      "tag": "docs-stackline-yarn-v1.0.1"
+      "expectedSha512": "f0b9a60ac0049b4443c74a04db17e3c7d246e379cf07283eba8e8eed49cf5b3f5a05eb1f33a0ce5d5e253aaa740eb6e1a532a2ccdf6a2642d3c7e5a903dda39f",
+      "tag": "docs-stackline-yarn-v1.0.2"
     }
   ]
 }

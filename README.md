@@ -4,13 +4,13 @@
 
 [![npm version](https://img.shields.io/npm/v/@stackline/yarn.svg?style=flat-square)](https://www.npmjs.com/package/@stackline/yarn)
 [![license](https://img.shields.io/npm/l/@stackline/yarn.svg?style=flat-square)](https://github.com/alexandroit/stackline-yarn)
-[![GitHub repository](https://img.shields.io/badge/GitHub-alexandroit%2Fstackline-yarn-181717?style=flat-square&logo=github)](https://github.com/alexandroit/stackline-yarn)
+[![GitHub repository](https://img.shields.io/badge/GitHub-repository-181717?style=flat-square&logo=github)](https://github.com/alexandroit/stackline-yarn)
 [![Docs](https://img.shields.io/badge/docs-alexandro.net-0f766e?style=flat-square)](https://alexandro.net/docs/vanilla/yarn/)
 [![Reddit community](https://img.shields.io/badge/community-r%2FStackline-ff4500?style=flat-square&logo=reddit&logoColor=white)](https://www.reddit.com/r/Stackline/)
 
 **[Documentation](https://alexandro.net/docs/vanilla/yarn/)** | **[npm](https://www.npmjs.com/package/@stackline/yarn)** | **[Issues](https://github.com/alexandroit/stackline-yarn/issues)** | **[Repository](https://github.com/alexandroit/stackline-yarn)**
 
-**Current package version:** `1.0.1`
+**Current package version:** `1.0.2`
 
 ---
 
@@ -22,7 +22,7 @@
 
 | Item | Value |
 | :--- | :--- |
-| Package | `@stackline/yarn@1.0.1` |
+| Package | `@stackline/yarn@1.0.2` |
 | API target | `yarn@1.22.22` |
 | Supported Node.js | `>=20.19.0` |
 | License | `BSD-2-Clause` |
@@ -44,10 +44,10 @@ npm install yarn@npm:@stackline/yarn
 ## Usage and API reference
 
 A maintained fork of Yarn Classic 1.22.22, rebuilt from its source history.
-Requires **Node.js >=20.19.0**. Published package version: **1.0.0**.
+Requires **Node.js >=20.19.0**. Published package version: **1.0.2**.
 
 ```sh
-npm install --global @stackline/yarn@1.0.1
+npm install --global @stackline/yarn@1.0.2
 yarn --version
 yarnpkg install --frozen-lockfile
 ```
@@ -55,7 +55,7 @@ yarnpkg install --frozen-lockfile
 For a project-local toolchain:
 
 ```sh
-npm install --save-dev yarn@npm:@stackline/yarn@1.0.1
+npm install --save-dev yarn@npm:@stackline/yarn@1.0.2
 npx yarn install
 ```
 
