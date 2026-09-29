@@ -976,7 +976,7 @@ export class NohoistResolver {
     if (this._isTopPackage(info)) {
       return false;
     }
-    if (info.nohoistList && info.nohoistList.length > 0 && mm.any(this._originalPath(info), info.nohoistList)) {
+    if (info.nohoistList && info.nohoistList.length > 0 && mm.any(this._originalPath(info), info.nohoistList, {strictSlashes: true})) {
       return true;
     }
     if (this._config.plugnplayEnabled) {

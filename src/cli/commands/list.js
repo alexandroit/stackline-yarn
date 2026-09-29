@@ -1,5 +1,7 @@
 /* @flow */
 
+import containsPattern from '../../util/compat-pattern.js';
+
 import type {Reporter} from '../../reporters/index.js';
 import type Config from '../../config.js';
 import type PackageResolver from '../../package-resolver.js';
@@ -178,7 +180,7 @@ export function filterTree(tree: Tree, filters: Array<string>, pattern: string =
   const notDim = tree.color !== 'dim';
   const hasChildren = tree.children == null ? false : tree.children.length > 0;
   const name = tree.name.slice(0, tree.name.lastIndexOf('@'));
-  const found = micromatch.any(name, filters) || micromatch.contains(name, pattern);
+  const found = micromatch.any(name, filters) || containsPattern(name, pattern);
 
   return notDim && (found || hasChildren);
 }

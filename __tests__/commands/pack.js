@@ -4,7 +4,7 @@ import {run as pack} from '../../src/cli/commands/pack.js';
 import {ConsoleReporter} from '../../src/reporters/index.js';
 import {run as buildRun} from './_helpers.js';
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
+jest.setTimeout(60000);
 
 const path = require('path');
 
@@ -44,7 +44,7 @@ export async function getFilesFromArchive(source, destination): Promise<Array<st
   return files;
 }
 
-test.concurrent('pack should work with a minimal example', (): Promise<void> => {
+test('pack should work with a minimal example', (): Promise<void> => {
   return runPack([], {}, 'minimal', async (config): Promise<void> => {
     const {cwd} = config;
     const files = await getFilesFromArchive(
@@ -56,7 +56,7 @@ test.concurrent('pack should work with a minimal example', (): Promise<void> => 
   });
 });
 
-test.concurrent('pack should include all files listed in the files array', (): Promise<void> => {
+test('pack should include all files listed in the files array', (): Promise<void> => {
   return runPack([], {}, 'files-include', async (config): Promise<void> => {
     const {cwd} = config;
     const files = await getFilesFromArchive(
@@ -67,7 +67,7 @@ test.concurrent('pack should include all files listed in the files array', (): P
   });
 });
 
-test.concurrent('pack should include files based from the package’s root', (): Promise<void> => {
+test('pack should include files based from the package’s root', (): Promise<void> => {
   return runPack([], {}, 'files-include-from-root', async (config): Promise<void> => {
     const {cwd} = config;
     const files = await getFilesFromArchive(
@@ -79,7 +79,7 @@ test.concurrent('pack should include files based from the package’s root', ():
   });
 });
 
-test.concurrent('pack should included globbed files', (): Promise<void> => {
+test('pack should included globbed files', (): Promise<void> => {
   return runPack([], {}, 'files-glob', async (config): Promise<void> => {
     const {cwd} = config;
     const files = await getFilesFromArchive(
@@ -92,7 +92,7 @@ test.concurrent('pack should included globbed files', (): Promise<void> => {
   });
 });
 
-test.concurrent('pack should include mandatory files not listed in files array if files not empty', (): Promise<
+test('pack should include mandatory files not listed in files array if files not empty', (): Promise<
   void,
 > => {
   return runPack([], {}, 'files-include-mandatory', async (config): Promise<void> => {
@@ -108,7 +108,7 @@ test.concurrent('pack should include mandatory files not listed in files array i
   });
 });
 
-test.concurrent('pack should exclude mandatory files from ignored directories', (): Promise<void> => {
+test('pack should exclude mandatory files from ignored directories', (): Promise<void> => {
   return runPack([], {}, 'exclude-mandatory-files-from-ignored-directories', async (config): Promise<void> => {
     const {cwd} = config;
     const files = await getFilesFromArchive(
@@ -121,7 +121,7 @@ test.concurrent('pack should exclude mandatory files from ignored directories', 
   });
 });
 
-test.concurrent('pack should include files only ignored in other directories', (): Promise<void> => {
+test('pack should include files only ignored in other directories', (): Promise<void> => {
   return runPack([], {}, 'include-files-ignored-in-other-directories', async (config): Promise<void> => {
     const {cwd} = config;
     const files = await getFilesFromArchive(
@@ -134,7 +134,7 @@ test.concurrent('pack should include files only ignored in other directories', (
   });
 });
 
-test.concurrent('pack should exclude all other files if files array is not empty', (): Promise<void> => {
+test('pack should exclude all other files if files array is not empty', (): Promise<void> => {
   return runPack([], {}, 'files-exclude', async (config): Promise<void> => {
     const {cwd} = config;
     const files = await getFilesFromArchive(
@@ -148,7 +148,7 @@ test.concurrent('pack should exclude all other files if files array is not empty
   });
 });
 
-test.concurrent('pack should exclude all dotfiles if not in files and files not empty', (): Promise<void> => {
+test('pack should exclude all dotfiles if not in files and files not empty', (): Promise<void> => {
   return runPack([], {}, 'files-exclude-dotfile', async (config): Promise<void> => {
     const {cwd} = config;
     const files = await getFilesFromArchive(
@@ -159,7 +159,7 @@ test.concurrent('pack should exclude all dotfiles if not in files and files not 
   });
 });
 
-test.concurrent('pack should exclude all files in dot-directories if not in files and files not empty', (): Promise<
+test('pack should exclude all files in dot-directories if not in files and files not empty', (): Promise<
   void,
 > => {
   return runPack([], {}, 'files-exclude-dotdir', async (config): Promise<void> => {
@@ -172,7 +172,7 @@ test.concurrent('pack should exclude all files in dot-directories if not in file
   });
 });
 
-test.concurrent('pack should include bundled dependencies', (): Promise<void> => {
+test('pack should include bundled dependencies', (): Promise<void> => {
   return runPack([], {}, 'bundled-dependencies', async (config): Promise<void> => {
     const {cwd} = config;
     const files = await getFilesFromArchive(
@@ -192,7 +192,7 @@ test.concurrent('pack should include bundled dependencies', (): Promise<void> =>
   });
 });
 
-test.concurrent('pack should match dotfiles with globs', (): Promise<void> => {
+test('pack should match dotfiles with globs', (): Promise<void> => {
   return runPack([], {}, 'glob-dotfile', async (config): Promise<void> => {
     const {cwd} = config;
     const files = await getFilesFromArchive(

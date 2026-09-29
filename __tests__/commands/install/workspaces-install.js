@@ -7,11 +7,11 @@ import * as fs from '../../../src/util/fs.js';
 import type ConfigType from '../../../src/config.js';
 import {runInstall, run as buildRun, makeConfigFromDirectory, isPackagePresent} from '../_helpers.js';
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 150000;
+jest.setTimeout(150000);
 
 const path = require('path');
 
-test.concurrent("workspaces don't work with disabled configuration in .yarnrc", async (): Promise<void> => {
+test("workspaces don't work with disabled configuration in .yarnrc", async (): Promise<void> => {
   let error = '';
   const reporter = new reporters.ConsoleReporter({});
   try {
@@ -22,7 +22,7 @@ test.concurrent("workspaces don't work with disabled configuration in .yarnrc", 
   expect(error).toContain(reporter.lang('workspacesDisabled'));
 });
 
-test.concurrent("workspaces don't work on non private projects", async (): Promise<void> => {
+test("workspaces don't work on non private projects", async (): Promise<void> => {
   let error = '';
   const reporter = new reporters.ConsoleReporter({});
   try {
@@ -33,7 +33,7 @@ test.concurrent("workspaces don't work on non private projects", async (): Promi
   expect(error).toContain(reporter.lang('workspacesRequirePrivateProjects'));
 });
 
-test.concurrent("workspaces don't work with duplicate names", async (): Promise<void> => {
+test("workspaces don't work with duplicate names", async (): Promise<void> => {
   let error = '';
   const reporter = new reporters.ConsoleReporter({});
   try {
@@ -44,7 +44,7 @@ test.concurrent("workspaces don't work with duplicate names", async (): Promise<
   expect(error).toContain(reporter.lang('workspaceNameDuplicate', 'workspace-1'));
 });
 
-test.concurrent("workspaces warn and get ignored if they don't have a name and a version", (): Promise<void> => {
+test("workspaces warn and get ignored if they don't have a name and a version", (): Promise<void> => {
   return buildRun(
     reporters.BufferReporter,
     path.join(__dirname, '..', '..', 'fixtures', 'install'),
@@ -69,7 +69,7 @@ test.concurrent("workspaces warn and get ignored if they don't have a name and a
   );
 });
 
-test.concurrent('installs workspaces dependencies into root folder', (): Promise<void> => {
+test('installs workspaces dependencies into root folder', (): Promise<void> => {
   return runInstall({}, 'workspaces-install-basic', async (config): Promise<void> => {
     const lockfile = await fs.readFile(path.join(config.cwd, 'yarn.lock'));
     expect(lockfile.indexOf('isarray')).toBeGreaterThanOrEqual(0);
@@ -89,7 +89,7 @@ test.concurrent('installs workspaces dependencies into root folder', (): Promise
   });
 });
 
-test.concurrent('install should install unhoistable dependencies in workspace node_modules', (): Promise<void> => {
+test('install should install unhoistable dependencies in workspace node_modules', (): Promise<void> => {
   return runInstall({}, 'workspaces-install-conflict', async (config): Promise<void> => {
     // node_modules/left-pad@1.1.3
     let packageFile = await fs.readFile(path.join(config.cwd, 'node_modules', 'left-pad', 'package.json'));
@@ -103,7 +103,7 @@ test.concurrent('install should install unhoistable dependencies in workspace no
   });
 });
 
-test.concurrent(
+test(
   'install should install unhoistable dependencies in workspace node_modules even when no symlink exists',
   (): Promise<void> => {
     return runInstall({}, 'workspaces-install-conflict-without-symlink', async (config): Promise<void> => {
@@ -122,7 +122,7 @@ test.concurrent(
   },
 );
 
-test.concurrent('install should link workspaces that refer each other', (): Promise<void> => {
+test('install should link workspaces that refer each other', (): Promise<void> => {
   return runInstall({}, 'workspaces-install-link', async (config): Promise<void> => {
     // packages/workspace-1/node_modules/left-pad - missing because it is hoisted to the root
     expect(await fs.exists(path.join(config.cwd, 'packages', 'workspace-1', 'node_modules'))).toBe(false);
@@ -135,7 +135,7 @@ test.concurrent('install should link workspaces that refer each other', (): Prom
   });
 });
 
-test.concurrent(
+test(
   'install should not link workspaces that refer not compatible version of another workspace',
   (): Promise<void> => {
     return runInstall({}, 'workspaces-install-link', async (config): Promise<void> => {
@@ -152,7 +152,7 @@ test.concurrent(
   },
 );
 
-test.concurrent('install should not link a workspace if the version is not compatible', (): Promise<void> => {
+test('install should not link a workspace if the version is not compatible', (): Promise<void> => {
   return runInstall({binLinks: true}, 'workspaces-install-link-invalid', async (config): Promise<void> => {
     // node_modules/left-pad - from npm
     const packageFile = await fs.readFile(path.join(config.cwd, 'node_modules', 'left-pad', 'package.json'));
@@ -162,7 +162,7 @@ test.concurrent('install should not link a workspace if the version is not compa
   });
 });
 
-test.concurrent('install should prioritize non workspace dependency at root over the workspace symlink', (): Promise<
+test('install should prioritize non workspace dependency at root over the workspace symlink', (): Promise<
   void,
 > => {
   return runInstall({}, 'workspaces-install-link-root', async (config): Promise<void> => {
@@ -187,7 +187,7 @@ test.concurrent('install should prioritize non workspace dependency at root over
   });
 });
 
-test.concurrent('install should install subdependencies of workspaces', (): Promise<void> => {
+test('install should install subdependencies of workspaces', (): Promise<void> => {
   // the tricky part is that isarray is a subdependency of left-pad that is not referenced in the root
   // but another workspace
   return runInstall({}, 'workspaces-install-subdeps', async (config): Promise<void> => {
@@ -195,7 +195,7 @@ test.concurrent('install should install subdependencies of workspaces', (): Prom
   });
 });
 
-test.concurrent(
+test(
   'install should install subdependencies of workspaces that are not referenced in other workspaces',
   (): Promise<void> => {
     // the tricky part is that left-pad is not a dependency of root
@@ -205,7 +205,7 @@ test.concurrent(
   },
 );
 
-test.concurrent('install should install dev dependencies of workspaces', (): Promise<void> => {
+test('install should install dev dependencies of workspaces', (): Promise<void> => {
   // the tricky part is that left-pad is not a dependency of root
   return runInstall({}, 'workspaces-install-subdeps-dev', async (config): Promise<void> => {
     expect(await fs.exists(path.join(config.cwd, 'node_modules', 'left-pad'))).toBe(true);
@@ -213,7 +213,7 @@ test.concurrent('install should install dev dependencies of workspaces', (): Pro
   });
 });
 
-test.concurrent('install should not install dev dependencies of workspaces in production mode', (): Promise<void> => {
+test('install should not install dev dependencies of workspaces in production mode', (): Promise<void> => {
   // the tricky part is that left-pad is not a dependency of root
   return runInstall({production: true}, 'workspaces-install-subdeps-dev', async (config): Promise<void> => {
     expect(await fs.exists(path.join(config.cwd, 'node_modules', 'left-pad'))).toBe(true);
@@ -222,14 +222,14 @@ test.concurrent('install should not install dev dependencies of workspaces in pr
 });
 
 // https://github.com/yarnpkg/yarn/issues/3598
-test.concurrent('install should work correctly for workspaces that have similar names', (): Promise<void> => {
+test('install should work correctly for workspaces that have similar names', (): Promise<void> => {
   return runInstall({production: true}, 'workspaces-install-names-issue', async (config): Promise<void> => {
     expect(await fs.exists(path.join(config.cwd, 'packages', 'jest', 'package.json'))).toBe(true);
     expect(await fs.exists(path.join(config.cwd, 'packages', 'jest-cli', 'package.json'))).toBe(true);
   });
 });
 
-test.concurrent('check command should work', (): Promise<void> => {
+test('check command should work', (): Promise<void> => {
   return runInstall({checkFiles: true}, 'workspaces-install-basic', async (config, reporter): Promise<void> => {
     // check command + integrity check
     let thrown = false;
@@ -243,7 +243,7 @@ test.concurrent('check command should work', (): Promise<void> => {
   });
 });
 
-test.concurrent('install should link binaries at root and in workspace dependents', (): Promise<void> => {
+test('install should link binaries at root and in workspace dependents', (): Promise<void> => {
   return runInstall({binLinks: true}, 'workspaces-install-link-bin', async (config): Promise<void> => {
     // node_modules/.bin/workspace-1 - link
     expect(await fs.exists(path.join(config.cwd, 'node_modules', '.bin', 'workspace-1'))).toBe(true);
@@ -255,7 +255,7 @@ test.concurrent('install should link binaries at root and in workspace dependent
   });
 });
 
-test.concurrent('install should ignore node_modules in workspaces when used with **/*', (): Promise<void> => {
+test('install should ignore node_modules in workspaces when used with **/*', (): Promise<void> => {
   return runInstall({}, 'workspaces-install-already-exists', async (config): Promise<void> => {
     expect(await fs.exists(path.join(config.cwd, 'node_modules', 'a'))).toBe(true);
     expect(await fs.exists(path.join(config.cwd, 'node_modules', 'b'))).toBe(true);
@@ -285,7 +285,7 @@ describe('install should ignore deep node_modules in workspaces', () => {
   });
 });
 
-test.concurrent('install should link binaries properly when run from child workspace', async () => {
+test('install should link binaries properly when run from child workspace', async () => {
   await runInstall({binLinks: true}, 'workspaces-install-bin', async (config, reporter): Promise<void> => {
     // initial install
     expect(await fs.exists(`${config.cwd}/node_modules/.bin/rimraf`)).toEqual(true);
@@ -326,7 +326,7 @@ describe('nohoist', () => {
     }
   }
 
-  test.concurrent('exclude packages by workspace', (): Promise<void> => {
+  test('exclude packages by workspace', (): Promise<void> => {
     return runInstall({}, 'workspaces-install-nohoist-by-ws', async (config): Promise<void> => {
       const existingPackages = [
         'workspace-disable-a',
@@ -353,7 +353,7 @@ describe('nohoist', () => {
     });
   });
 
-  test.concurrent('disable all hoist for every workspace', (): Promise<void> => {
+  test('disable all hoist for every workspace', (): Promise<void> => {
     return runInstall({}, 'workspaces-install-nohoist-all-from-root', async config => {
       const existingPackages = [
         'workspace-disable-a',
@@ -378,7 +378,7 @@ describe('nohoist', () => {
       }
     });
   });
-  test.concurrent('disable some hoist for every workspace', (): Promise<void> => {
+  test('disable some hoist for every workspace', (): Promise<void> => {
     return runInstall({}, 'workspaces-install-nohoist-some-from-root', async config => {
       const existingPackages = [
         'workspace-disable-a',
@@ -404,7 +404,7 @@ describe('nohoist', () => {
       }
     });
   });
-  test.concurrent('disable hoisting package across versions', (): Promise<void> => {
+  test('disable hoisting package across versions', (): Promise<void> => {
     return runInstall({}, 'workspaces-install-nohoist-across-versions', async config => {
       const existingPackages = [
         'workspace-1',

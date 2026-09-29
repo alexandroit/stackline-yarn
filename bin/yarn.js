@@ -7,8 +7,10 @@
 var ver = process.versions.node;
 var majorVer = parseInt(ver.split('.')[0], 10);
 
-if (majorVer < 4) {
-  console.error('Node version ' + ver + ' is not supported, please use Node.js 4.0 or higher.');
+var minorVer = parseInt(ver.split('.')[1], 10);
+
+if (majorVer < 20 || (majorVer === 20 && minorVer < 19)) {
+  console.error('Node version ' + ver + ' is not supported, please use Node.js 20.19 or higher.');
   process.exit(1); // eslint-disable-line no-process-exit
 } else {
   try {

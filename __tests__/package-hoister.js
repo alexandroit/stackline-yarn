@@ -550,23 +550,25 @@ describe('nohoist', () => {
   });
 
   describe('nohoistList pattern matching', () => {
+    // micromatch 4 requires strictSlashes to retain Yarn Classic's a/** contract.
+    const matchPaths = (paths, pattern) => mm(paths, pattern, {strictSlashes: true});
     const paths = ['a', 'a/b', 'a/b/c', 'a/b/c/d', 'a/d', 'b/c', 'd/a', 'e/d/a', 'd/a/e', 'd/a/e/b'];
     test('match explicit path', () => {
-      expect(mm(paths, 'a')).toEqual(['a']);
-      expect(mm(paths, 'b/c')).toEqual(['b/c']);
-      expect(mm(paths, 'd')).toEqual([]);
-      expect(mm(paths, 'a/b')).toEqual(['a/b']);
+      expect(matchPaths(paths, 'a')).toEqual(['a']);
+      expect(matchPaths(paths, 'b/c')).toEqual(['b/c']);
+      expect(matchPaths(paths, 'd')).toEqual([]);
+      expect(matchPaths(paths, 'a/b')).toEqual(['a/b']);
     });
     test('match glob pattern', () => {
-      expect(mm(paths, '**')).toEqual(paths);
-      expect(mm(paths, '*')).toEqual(['a']);
+      expect(matchPaths(paths, '**')).toEqual(paths);
+      expect(matchPaths(paths, '*')).toEqual(['a']);
 
-      expect(mm(paths, 'a/*')).toEqual(['a/b', 'a/d']);
-      expect(mm(paths, 'a/**')).toEqual(['a/b', 'a/b/c', 'a/b/c/d', 'a/d']);
-      expect(mm(paths, '*/a')).toEqual(['d/a']);
-      expect(mm(paths, '**/a')).toEqual(['a', 'd/a', 'e/d/a']);
-      expect(mm(paths, '*/a/*')).toEqual(['d/a/e']);
-      expect(mm(paths, '**/a/**')).toEqual(['a/b', 'a/b/c', 'a/b/c/d', 'a/d', 'd/a/e', 'd/a/e/b']);
+      expect(matchPaths(paths, 'a/*')).toEqual(['a/b', 'a/d']);
+      expect(matchPaths(paths, 'a/**')).toEqual(['a/b', 'a/b/c', 'a/b/c/d', 'a/d']);
+      expect(matchPaths(paths, '*/a')).toEqual(['d/a']);
+      expect(matchPaths(paths, '**/a')).toEqual(['a', 'd/a', 'e/d/a']);
+      expect(matchPaths(paths, '*/a/*')).toEqual(['d/a/e']);
+      expect(matchPaths(paths, '**/a/**')).toEqual(['a/b', 'a/b/c', 'a/b/c/d', 'a/d', 'd/a/e', 'd/a/e/b']);
     });
   });
   test('can disable hoist for the whole branch', () => {

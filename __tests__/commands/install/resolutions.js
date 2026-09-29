@@ -6,12 +6,12 @@ import * as fs from '../../../src/util/fs.js';
 import {Install} from '../../../src/cli/commands/install.js';
 import Lockfile from '../../../src/lockfile';
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 150000;
+jest.setTimeout(150000);
 
 const path = require('path');
 const semver = require('semver');
 
-test.concurrent('install with simple exact resolutions should override all versions', (): Promise<void> => {
+test('install with simple exact resolutions should override all versions', (): Promise<void> => {
   return runInstall({}, {source: 'resolutions', cwd: 'simple-exact'}, async config => {
     expect(await getPackageVersion(config, 'a')).toEqual('1.0.0');
     expect(await getPackageVersion(config, 'b')).toEqual('1.0.0');
@@ -24,7 +24,7 @@ test.concurrent('install with simple exact resolutions should override all versi
   });
 });
 
-test.concurrent('install with subtree exact resolutions should override subtree versions', (): Promise<void> => {
+test('install with subtree exact resolutions should override subtree versions', (): Promise<void> => {
   return runInstall({}, {source: 'resolutions', cwd: 'subtree-exact'}, async config => {
     expect(await getPackageVersion(config, 'left-pad')).toEqual('1.0.0');
     expect(await getPackageVersion(config, 'd2')).toEqual('1.0.0');
@@ -34,7 +34,7 @@ test.concurrent('install with subtree exact resolutions should override subtree 
   });
 });
 
-test.concurrent('install with --frozen-lockfile with resolutions', async (): Promise<void> => {
+test('install with --frozen-lockfile with resolutions', async (): Promise<void> => {
   const reporter = new ConsoleReporter({});
 
   try {
@@ -46,24 +46,24 @@ test.concurrent('install with --frozen-lockfile with resolutions', async (): Pro
   }
 });
 
-test.concurrent('install with resolutions on optional dependencies should not resolve', (): Promise<void> => {
+test('install with resolutions on optional dependencies should not resolve', (): Promise<void> => {
   return runInstall({ignoreOptional: true}, {source: 'resolutions', cwd: 'optional-deps'}, async config => {
     expect(await isPackagePresent(config, 'left-pad')).toEqual(false);
   });
 });
 
-test.concurrent('install with exotic resolutions should override versions', (): Promise<void> => {
+test('install with exotic resolutions should override versions', (): Promise<void> => {
   return runInstall({}, {source: 'resolutions', cwd: 'exotic-version'}, async config => {
     expect(await getPackageVersion(config, 'left-pad')).toEqual('1.1.1');
   });
 });
 
-test.concurrent('install with range resolutions should override versions', (): Promise<void> => {
+test('install with range resolutions should override versions', (): Promise<void> => {
   return runInstall({}, {source: 'resolutions', cwd: 'simple-range'}, async config => {
     expect(await getPackageVersion(config, 'left-pad')).toEqual('1.1.1');
   });
 });
-test.concurrent('should warn when resolution entries are incorrrect or incompatible', async (): Promise<void> => {
+test('should warn when resolution entries are incorrrect or incompatible', async (): Promise<void> => {
   let error;
 
   try {
@@ -77,35 +77,35 @@ test.concurrent('should warn when resolution entries are incorrrect or incompati
   expect(error).toContain('Resolution field "invalidname/" does not end with a valid package name and will be ignored');
 });
 
-test.concurrent('install with resolutions should correctly install simple scoped packages', (): Promise<void> => {
+test('install with resolutions should correctly install simple scoped packages', (): Promise<void> => {
   return runInstall({}, {source: 'resolutions', cwd: 'scoped-simple'}, async config => {
     expect(await getPackageVersion(config, '@scoped/a')).toEqual('1.0.0');
     expect(await getPackageVersion(config, '@scoped/b')).toEqual('2.0.0');
   });
 });
 
-test.concurrent('install with resolutions should correctly install toplevel scoped packages', (): Promise<void> => {
+test('install with resolutions should correctly install toplevel scoped packages', (): Promise<void> => {
   return runInstall({}, {source: 'resolutions', cwd: 'scoped-toplevel'}, async config => {
     expect(await getPackageVersion(config, '@scoped/a')).toEqual('1.0.0');
     expect(await getPackageVersion(config, '@scoped/b')).toEqual('2.0.0');
   });
 });
 
-test.concurrent('install with nested resolutions', (): Promise<void> => {
+test('install with nested resolutions', (): Promise<void> => {
   return runInstall({}, 'install-nested-resolutions', async config => {
     expect(await getPackageVersion(config, 'strip-ansi')).toEqual('2.0.1');
     expect(await getPackageVersion(config, 'ansi-regex')).toEqual('1.1.1');
   });
 });
 
-test.concurrent('install with nested resolutions using flat mode', (): Promise<void> => {
+test('install with nested resolutions using flat mode', (): Promise<void> => {
   return runInstall({flat: true}, 'install-nested-resolutions', async config => {
     expect(await getPackageVersion(config, 'strip-ansi')).toEqual('2.0.1');
     expect(await getPackageVersion(config, 'ansi-regex')).toEqual('1.1.1');
   });
 });
 
-test.concurrent('install with resolution settings should correctly bailout during the integrity check', (): Promise<
+test('install with resolution settings should correctly bailout during the integrity check', (): Promise<
   void,
 > => {
   return runInstall(
@@ -123,7 +123,7 @@ test.concurrent('install with resolution settings should correctly bailout durin
   );
 });
 
-test.concurrent('adding resolutions after install should cause lockfile regeneration on second install', (): Promise<
+test('adding resolutions after install should cause lockfile regeneration on second install', (): Promise<
   void,
 > => {
   return runInstall(

@@ -9,7 +9,7 @@ import Config from '../../src/config.js';
 import path from 'path';
 import {NODE_BIN_PATH, YARN_BIN_PATH} from '../../src/constants';
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 90000;
+jest.setTimeout(90000);
 
 const fixturesLoc = path.join(__dirname, '..', 'fixtures', 'workspace');
 const spawn: $FlowFixMe = require('../../src/util/child').spawn;

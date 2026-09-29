@@ -3,7 +3,7 @@
 jest.mock('../../src/util/execute-lifecycle-script', () => {
   return {
     // $FlowFixMe
-    ...require.requireActual('../../src/util/execute-lifecycle-script'),
+    ...jest.requireActual('../../src/util/execute-lifecycle-script'),
     execCommand: jest.fn(),
   };
 });
@@ -16,7 +16,7 @@ import {run} from '../../src/cli/commands/run.js';
 import * as fs from '../../src/util/fs.js';
 import * as reporters from '../../src/reporters/index.js';
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 90000;
+jest.setTimeout(90000);
 
 const {execCommand}: $FlowFixMe = require('../../src/util/execute-lifecycle-script');
 
@@ -93,7 +93,7 @@ test('runs script containing spaces', (): Promise<void> =>
   runRun(['build'], {}, 'spaces', async (config): ?Promise<void> => {
     const pkg = await fs.readJson(path.join(config.cwd, 'package.json'));
     // The command gets called with a space appended
-    expect(execCommand).toBeCalledWith({
+    expect(execCommand).toHaveBeenCalledWith({
       stage: 'build',
       config,
       cmd: pkg.scripts.build,
@@ -118,7 +118,7 @@ test('properly handle bin scripts', (): Promise<void> =>
   runRun(['cat-names'], {}, 'bin', config => {
     const script = path.join(config.cwd, 'node_modules', '.bin', 'cat-names');
 
-    expect(execCommand).toBeCalledWith({
+    expect(execCommand).toHaveBeenCalledWith({
       stage: 'cat-names',
       config,
       cmd: script,
@@ -164,7 +164,7 @@ test('adds string delimiters if args have spaces', (): Promise<void> =>
     const script = path.join(config.cwd, 'node_modules', '.bin', 'cat-names');
     const q = process.platform === 'win32' ? '"' : "'";
 
-    expect(execCommand).toBeCalledWith({
+    expect(execCommand).toHaveBeenCalledWith({
       stage: 'cat-names',
       config,
       cmd: `${script} --filter ${q}cat names${q}`,
@@ -178,7 +178,7 @@ test('adds quotes if args have spaces and quotes', (): Promise<void> =>
     const script = path.join(config.cwd, 'node_modules', '.bin', 'cat-names');
     const quotedCatNames = process.platform === 'win32' ? '^"\\^"cat^ names\\^"^"' : `'"cat names"'`;
 
-    expect(execCommand).toBeCalledWith({
+    expect(execCommand).toHaveBeenCalledWith({
       stage: 'cat-names',
       config,
       cmd: `${script} --filter ${quotedCatNames}`,
@@ -221,7 +221,7 @@ test('runs script with custom script-shell', (): Promise<void> =>
   runRunWithCustomShell('/usr/bin/dummy', ['start'], {}, 'script-shell', async (config): ?Promise<void> => {
     const pkg = await fs.readJson(path.join(config.cwd, 'package.json'));
     // The command gets called with the provided customShell
-    expect(execCommand).toBeCalledWith({
+    expect(execCommand).toHaveBeenCalledWith({
       stage: 'start',
       config,
       cmd: pkg.scripts.start,

@@ -9,7 +9,7 @@ import {run} from '../../src/cli/commands/version.js';
 import * as fs from '../../src/util/fs.js';
 import * as reporters from '../../src/reporters/index.js';
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 90000;
+jest.setTimeout(90000);
 
 const execCommand: $FlowFixMe = require('../../src/util/execute-lifecycle-script').execCommand;
 const spawn: $FlowFixMe = require('../../src/util/git/git-spawn').spawn;

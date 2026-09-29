@@ -5,7 +5,7 @@ jest.mock('../../src/util/user-home-dir.js', () => ({
 }));
 
 jest.mock('path', () => {
-  const path = jest.genMockFromModule('fs');
+  const path = jest.createMockFromModule('fs');
   path.resolve = function(): string {
     return 'RESOLVED ' + JSON.stringify(Array.prototype.slice.call(arguments));
   };

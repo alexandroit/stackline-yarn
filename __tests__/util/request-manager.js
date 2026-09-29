@@ -6,7 +6,7 @@ import {Reporter} from '../../src/reporters/index.js';
 import Config from '../../src/config.js';
 import * as fs from '../../src/util/fs.js';
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
+jest.setTimeout(60000);
 
 const net = require('net');
 const http = require('http');
@@ -121,170 +121,89 @@ test('RequestManager.request with mutual TLS', async () => {
   expect(body).toBe('ok');
 });
 
-test('RequestManager.execute timeout error with maxRetryAttempts=1', async () => {
-  jest.useFakeTimers();
-
-  const LIMIT = 1;
-  let counter = 0;
-  const server = net.createServer(c => {
-    counter += 1;
-
-    // Trigger our offline retry queue which has a fixed 3 sec delay
-    if (counter < LIMIT) {
-      c.on('close', jest.runOnlyPendingTimers.bind(jest));
+// Real sockets retain the timeout/retry contract without coupling request's
+// scheduling to an obsolete Jest fake-timer implementation.
+for (const limit of [1, 5]) {
+  test(`RequestManager.execute timeout error with maxRetryAttempts=${limit}`, async () => {
+    let counter = 0;
+    const sockets = new Set();
+    const server = net.createServer(socket => {
+      counter += 1;
+      sockets.add(socket);
+      socket.on('close', () => sockets.delete(socket));
+    });
+    await new Promise(resolve => server.listen(0, resolve));
+    try {
+      const config = await Config.create({networkTimeout: 50});
+      if (limit === 1) config.requestManager.setOptions({maxRetryAttempts: 1});
+      await expect(config.requestManager.request({
+        url: `http://localhost:${server.address().port}/?nocache`,
+      })).rejects.toThrow('TIMEDOUT');
+      expect(counter).toBe(limit);
+    } finally {
+      for (const socket of sockets) socket.destroy();
+      await new Promise(resolve => server.close(resolve));
     }
-
-    // emulate TCP server that never closes the connection by not
-    // doing anything
-  });
-
-  try {
-    server.listen(0);
-    const config = await Config.create({networkTimeout: 50});
-    config.requestManager.setOptions({maxRetryAttempts: LIMIT});
-    const port = server.address().port;
-    await config.requestManager.request({
-      url: `http://localhost:${port}/?nocache`,
-    });
-  } catch (err) {
-    expect(err.message).toContain('TIMEDOUT');
-    expect(counter).toEqual(LIMIT);
-  } finally {
-    await server.close();
-    jest.useRealTimers();
-  }
-});
-
-test('RequestManager.execute timeout error with default maxRetryAttempts', async () => {
-  jest.useFakeTimers();
-  const LIMIT = 5;
-  let counter = 0;
-  const server = http.createServer(req => {
-    counter += 1;
-    // Trigger our offline retry queue which has a fixed 3 sec delay
-    if (counter < LIMIT) {
-      req.on('aborted', jest.runOnlyPendingTimers.bind(jest));
-    }
-    // emulate HTTP server that never closes the connection by not
-    // doing anything
-  });
-  try {
-    server.listen(0);
-    const config = await Config.create({networkTimeout: 50});
-    const port = server.address().port;
-    await config.requestManager.request({
-      url: `http://localhost:${port}/?nocache`,
-    });
-  } catch (err) {
-    expect(err.message).toContain('TIMEDOUT');
-    expect(counter).toEqual(LIMIT);
-  } finally {
-    await server.close();
-    jest.useRealTimers();
-  }
-});
-
-for (const statusCode of [403, 442]) {
-  test(`RequestManager.execute Request ${statusCode} error`, async () => {
-    // The await await is just to silence Flow - https://github.com/facebook/flow/issues/6064
-    const config = await await Config.create({}, new Reporter());
-    const mockStatusCode = statusCode;
-    jest.mock('request', factory => options => {
-      options.callback('', {statusCode: mockStatusCode}, '');
-      return {
-        on: () => {},
-      };
-    });
-    await config.requestManager.execute({
-      params: {
-        url: `https://localhost:port/?nocache`,
-        headers: {Connection: 'close'},
-      },
-      resolve: body => {},
-      reject: err => {
-        expect(err.message).toBe(
-          `https://localhost:port/?nocache: Request "https://localhost:port/?nocache" returned a 403`,
-        );
-      },
-    });
   });
 }
 
-test('RequestManager.execute one time password error on npm request', async () => {
-  jest.resetModules();
-  jest.mock('request', factory => options => {
-    options.callback(
-      '',
-      {statusCode: 401, headers: {'www-authenticate': 'otp'}},
-      {error: 'You must provide a one-time pass. Upgrade your client to npm@latest in order to use 2FA.'},
-    );
-    return {
-      on: () => {},
-    };
-  });
-
-  try {
-    const config = await Config.create({});
-    await config.requestManager.request({
-      url: 'https://registry.npmjs.org/yarn',
+for (const statusCode of [403, 442]) {
+  test(`RequestManager.execute Request ${statusCode} error`, async () => {
+    const server = http.createServer((req, res) => {
+      res.writeHead(statusCode);
+      res.end('');
     });
-  } catch (err) {
-    expect(err).toBeInstanceOf(OneTimePasswordError);
-  }
-});
-
-test('RequestManager.execute one time password error on npm login request', async () => {
-  jest.resetModules();
-  jest.mock('request', factory => options => {
-    options.callback('', {statusCode: 401, headers: {'www-authenticate': 'otp'}}, {ok: false});
-    return {
-      on: () => {},
-    };
+    await new Promise(resolve => server.listen(0, resolve));
+    try {
+      const config = await Config.create({}, new Reporter());
+      const url = `http://localhost:${server.address().port}/?nocache`;
+      await expect(config.requestManager.request({url})).rejects.toThrow(
+        `${url}: Request "${url}" returned a ${statusCode}`,
+      );
+    } finally {
+      await new Promise(resolve => server.close(resolve));
+    }
   });
+}
 
-  try {
-    const config = await Config.create({});
-    await config.requestManager.request({
-      url: 'https://registry.npmjs.org/-/user/org.couchdb.user:user',
+for (const endpoint of ['/yarn', '/-/user/org.couchdb.user:user']) {
+  test(`RequestManager.execute one time password error on ${endpoint}`, async () => {
+    const server = http.createServer((req, res) => {
+      res.writeHead(401, {'www-authenticate': 'otp', 'content-type': 'application/json'});
+      res.end(JSON.stringify({ok: false, error: 'One-time password required'}));
     });
-  } catch (err) {
-    expect(err).toBeInstanceOf(OneTimePasswordError);
-  }
-});
+    await new Promise(resolve => server.listen(0, resolve));
+    try {
+      const config = await Config.create({});
+      await expect(config.requestManager.request({
+        url: `http://localhost:${server.address().port}${endpoint}`,
+        json: true,
+      })).rejects.toBeInstanceOf(OneTimePasswordError);
+    } finally {
+      await new Promise(resolve => server.close(resolve));
+    }
+  });
+}
 
-// Cloudflare will occasionally return an html response with a 500 status code on some calls
+// Exercise the actual HTTP client and its retry queue, including the real delay.
 for (const statusCode of [408, 500, 542]) {
   test(`RequestManager.execute retries on ${statusCode} error`, async () => {
-    jest.resetModules();
-    // The await await is just to silence Flow - https://github.com/facebook/flow/issues/6064
-    const config = await await Config.create({}, new Reporter());
-    const mockStatusCode = statusCode;
-    jest.mock('request', factory => {
-      let retryCount = 2;
-      return options => {
-        if (retryCount-- > 0) {
-          options.callback(
-            '',
-            {statusCode: mockStatusCode},
-            `<!DOCTYPE html><title>Rendering error | registry.yarnpkg.com | Cloudflare</title>...`,
-          );
-        } else {
-          options.callback('', {statusCode: 200}, '');
-        }
-        return {
-          on: () => {},
-        };
-      };
+    let attempts = 0;
+    const server = http.createServer((req, res) => {
+      attempts += 1;
+      res.writeHead(attempts < 3 ? statusCode : 200);
+      res.end(attempts < 3 ? '<!DOCTYPE html><title>Rendering error</title>' : 'recovered');
     });
-    await config.requestManager.execute({
-      params: {
-        url: `https://localhost:port/?nocache`,
-        headers: {Connection: 'close'},
-      },
-      resolve: body => {
-        expect(body).not.toEqual(false);
-      },
-    });
+    await new Promise(resolve => server.listen(0, resolve));
+    try {
+      const config = await Config.create({}, new Reporter());
+      await expect(config.requestManager.request({
+        url: `http://localhost:${server.address().port}/?nocache`,
+      })).resolves.toBe('recovered');
+      expect(attempts).toBe(3);
+    } finally {
+      await new Promise(resolve => server.close(resolve));
+    }
   });
 }
 

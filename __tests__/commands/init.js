@@ -8,11 +8,11 @@ import * as fs from '../../src/util/fs.js';
 
 const path = require('path');
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
+jest.setTimeout(60000);
 
 const fixturesLoc = path.join(__dirname, '..', 'fixtures', 'init');
 
-test.concurrent('init should create package.json on current cwd', (): Promise<void> => {
+test('init should create package.json on current cwd', (): Promise<void> => {
   let initialParentManifest;
 
   return buildRun(
@@ -185,10 +185,10 @@ test('init and give private empty', (): Promise<void> => {
   );
 });
 
-test.concurrent('getGitConfigInfo should not return the git config val', async (): Promise<void> => {
+test('getGitConfigInfo should not return the git config val', async (): Promise<void> => {
   expect('hi seb').toEqual(await getGitConfigInfo('some-info', () => Promise.resolve('hi seb')));
 });
 
-test.concurrent('getGitConfigInfo should not fail when git fails', async (): Promise<void> => {
+test('getGitConfigInfo should not fail when git fails', async (): Promise<void> => {
   expect('').toEqual(await getGitConfigInfo('some-info', () => Promise.reject(Error())));
 });

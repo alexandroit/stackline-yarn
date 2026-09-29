@@ -3,7 +3,7 @@
 import path from 'path';
 
 import invariant from 'invariant';
-import uuid from 'uuid';
+import * as uuid from 'uuid';
 
 import type {Manifest} from '../../types.js';
 import type PackageRequest from '../../package-request.js';

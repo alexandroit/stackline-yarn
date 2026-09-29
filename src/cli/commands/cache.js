@@ -1,5 +1,7 @@
 /* @flow */
 
+import containsPattern from '../../util/compat-pattern.js';
+
 import type {Reporter} from '../../reporters/index.js';
 import type Config from '../../config.js';
 import buildSubCommands from './_build-sub-commands.js';
@@ -7,7 +9,6 @@ import * as fs from '../../util/fs.js';
 
 const invariant = require('invariant');
 const path = require('path');
-const micromatch = require('micromatch');
 
 export function hasWrapper(flags: Object, args: Array<string>): boolean {
   return args[0] !== 'dir';
@@ -78,7 +79,7 @@ async function getCachedPackages(config): Object {
 
 async function list(config: Config, reporter: Reporter, flags: Object, args: Array<string>): Promise<void> {
   const filterOut = ({registry, package: manifest, remote} = {}) => {
-    if (flags.pattern && !micromatch.contains(manifest.name, flags.pattern)) {
+    if (flags.pattern && !containsPattern(manifest.name, flags.pattern)) {
       return false;
     }
     return true;

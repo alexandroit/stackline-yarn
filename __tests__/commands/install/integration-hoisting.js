@@ -2,9 +2,9 @@
 
 import {getPackageVersion, isPackagePresent, runInstall} from '../_helpers.js';
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 120000;
+jest.setTimeout(120000);
 
-test.concurrent('install hoister should prioritise popular transitive dependencies', (): Promise<void> => {
+test('install hoister should prioritise popular transitive dependencies', (): Promise<void> => {
   // a -> b -> b-2
   //        -> c
   //           -> b-2
@@ -14,7 +14,7 @@ test.concurrent('install hoister should prioritise popular transitive dependenci
   });
 });
 
-test.concurrent('install hoister should prioritise popular deep dependencies', (): Promise<void> => {
+test('install hoister should prioritise popular deep dependencies', (): Promise<void> => {
   // Arrange (fixture):
   //   /foo
   //     /baz-1
@@ -43,7 +43,7 @@ test.concurrent('install hoister should prioritise popular deep dependencies', (
   });
 });
 
-test.concurrent(
+test(
   'install hoister should not install prioritised popular transitive devDependencies in --prod mode',
   (): Promise<void> => {
     return runInstall({production: true}, 'install-prod-prioritized-popular-transitive-dev-dep', async config => {

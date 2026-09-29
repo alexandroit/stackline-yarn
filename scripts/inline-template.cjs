@@ -1,0 +1,2 @@
+const fs=require('node:fs'),path=require('node:path');
+module.exports=({types:t})=>({visitor:{ImportDeclaration(p,state){if(p.node.source.value.endsWith('.tpl.js')){const value=fs.readFileSync(path.resolve(path.dirname(state.file.opts.filename),p.node.source.value),'utf8');p.replaceWith(t.variableDeclaration('const',[t.variableDeclarator(p.node.specifiers[0].local,t.stringLiteral(value))]));}}}});

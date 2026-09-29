@@ -30,49 +30,49 @@ async function runAutoclean(
   );
 }
 
-test.concurrent('tells user to run with --init when .yarnclean does not exist', (): Promise<void> => {
+test('tells user to run with --init when .yarnclean does not exist', (): Promise<void> => {
   return runAutoclean({}, 'not-initialized', (config, reporter, output): ?Promise<void> => {
     expect(output).toContain(reporter.lang('cleanDoesNotExist', CLEAN_FILENAME));
   });
 });
 
-test.concurrent('tells user to run with --init when .yarnclean does not exist and --force', (): Promise<void> => {
+test('tells user to run with --init when .yarnclean does not exist and --force', (): Promise<void> => {
   return runAutoclean({force: true}, 'not-initialized', (config, reporter, output): ?Promise<void> => {
     expect(output).toContain(reporter.lang('cleanDoesNotExist', CLEAN_FILENAME));
   });
 });
 
-test.concurrent('tells user to edit .yarnclean after init', (): Promise<void> => {
+test('tells user to edit .yarnclean after init', (): Promise<void> => {
   return runAutoclean({init: true}, 'not-initialized', (config, reporter, output): ?Promise<void> => {
     expect(output).toContain(reporter.lang('cleanCreatedFile', CLEAN_FILENAME));
   });
 });
 
-test.concurrent('creates .yarnclean when --init passed', async () => {
+test('creates .yarnclean when --init passed', async () => {
   await runAutoclean({init: true}, 'not-initialized', async (config, reporter, output): ?Promise<void> => {
     expect(await fs.exists(`${config.cwd}/.yarnclean`)).toEqual(true);
   });
 });
 
-test.concurrent('tells user to run with --force when .yarnclean exists', (): Promise<void> => {
+test('tells user to run with --force when .yarnclean exists', (): Promise<void> => {
   return runAutoclean({}, 'initialized', (config, reporter, output): ?Promise<void> => {
     expect(output).toContain(reporter.lang('cleanRequiresForce', CLEAN_FILENAME));
   });
 });
 
-test.concurrent('tells user file exists already when --init and .yarnclean exists', (): Promise<void> => {
+test('tells user file exists already when --init and .yarnclean exists', (): Promise<void> => {
   return runAutoclean({init: true}, 'initialized', (config, reporter, output): ?Promise<void> => {
     expect(output).toContain(reporter.lang('cleanAlreadyExists', CLEAN_FILENAME));
   });
 });
 
-test.concurrent('runs clean when --force passed and .yarnclean exists', async () => {
+test('runs clean when --force passed and .yarnclean exists', async () => {
   await runAutoclean({force: true}, 'initialized', async (config, reporter, output): ?Promise<void> => {
     expect(await fs.exists(`${config.cwd}/node_modules/left-pad/README.md`)).toEqual(false);
   });
 });
 
-test.concurrent('runs clean even through workspaces', async () => {
+test('runs clean even through workspaces', async () => {
   await runAutoclean({force: true}, 'workspaces', async (config): ?Promise<void> => {
     expect(await fs.exists(`${config.cwd}/node_modules/left-pad/index.js`)).toEqual(true);
     expect(await fs.exists(`${config.cwd}/node_modules/left-pad/README.md`)).toEqual(false);

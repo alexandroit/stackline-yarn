@@ -4,7 +4,7 @@ import {run as buildRun} from './_helpers.js';
 import {run as outdated} from '../../src/cli/commands/outdated.js';
 import {ConsoleReporter, JSONReporter} from '../../src/reporters/index.js';
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 90000;
+jest.setTimeout(90000);
 
 const semver = require('semver');
 const stream = require('stream');
@@ -43,7 +43,7 @@ const runOutdated = buildRun.bind(
   },
 );
 
-test.concurrent('throws if lockfile is out of date', (): Promise<void> => {
+test('throws if lockfile is out of date', (): Promise<void> => {
   const reporter = new ConsoleReporter({});
 
   return new Promise(async resolve => {
@@ -57,13 +57,13 @@ test.concurrent('throws if lockfile is out of date', (): Promise<void> => {
   });
 });
 
-test.concurrent('no output when current matches latest', (): Promise<void> => {
+test('no output when current matches latest', (): Promise<void> => {
   return runOutdated([], {}, 'current-is-latest', (config, reporter, out): ?Promise<void> => {
     expect(out).toBe('');
   });
 });
 
-test.concurrent('works with no arguments', (): Promise<void> => {
+test('works with no arguments', (): Promise<void> => {
   return runOutdated([], {}, 'no-args', (config, reporter, out): ?Promise<void> => {
     const json: Object = JSON.parse(out);
 
@@ -72,7 +72,7 @@ test.concurrent('works with no arguments', (): Promise<void> => {
   });
 });
 
-test.concurrent('works with single argument', (): Promise<void> => {
+test('works with single argument', (): Promise<void> => {
   return runOutdated(['max-safe-integer'], {}, 'single-package', (config, reporter, out): ?Promise<void> => {
     const json: Object = JSON.parse(out);
 
@@ -82,7 +82,7 @@ test.concurrent('works with single argument', (): Promise<void> => {
   });
 });
 
-test.concurrent('works with multiple arguments', (): Promise<void> => {
+test('works with multiple arguments', (): Promise<void> => {
   return runOutdated(['left-pad', 'max-safe-integer'], {}, 'multiple-packages', (config, reporter, out): ?Promise<
     void,
   > => {
@@ -96,7 +96,7 @@ test.concurrent('works with multiple arguments', (): Promise<void> => {
   });
 });
 
-test.concurrent('works with exotic resolvers', (): Promise<void> => {
+test('works with exotic resolvers', (): Promise<void> => {
   return runOutdated([], {}, 'exotic-resolvers', (config, reporter, out): ?Promise<void> => {
     const json: Object = JSON.parse(out);
     const first = [
@@ -117,13 +117,13 @@ test.concurrent('works with exotic resolvers', (): Promise<void> => {
   });
 });
 
-test.concurrent('hides when current > latest (next, beta tag)', (): Promise<void> => {
+test('hides when current > latest (next, beta tag)', (): Promise<void> => {
   return runOutdated([], {}, 'current-newer-than-latest', (config, reporter, out): ?Promise<void> => {
     expect(out).toBe('');
   });
 });
 
-test.concurrent('shows when wanted > current and current > latest', (): Promise<void> => {
+test('shows when wanted > current and current > latest', (): Promise<void> => {
   return runOutdated([], {}, 'wanted-newer-than-current', (config, reporter, out): ?Promise<void> => {
     const json: Object = JSON.parse(out);
 
@@ -134,7 +134,7 @@ test.concurrent('shows when wanted > current and current > latest', (): Promise<
   });
 });
 
-test.concurrent('displays correct dependency types', (): Promise<void> => {
+test('displays correct dependency types', (): Promise<void> => {
   return runOutdated([], {}, 'display-dependency-type', (config, reporter, out): ?Promise<void> => {
     const json: Object = JSON.parse(out);
     const {body} = json.data;
@@ -153,7 +153,7 @@ test.concurrent('displays correct dependency types', (): Promise<void> => {
   });
 });
 
-test.concurrent('shows dependencies from entire workspace', async (): Promise<void> => {
+test('shows dependencies from entire workspace', async (): Promise<void> => {
   await runOutdated([], {}, 'workspaces', (config, reporter, out): ?Promise<void> => {
     const json: Object = JSON.parse(out);
 

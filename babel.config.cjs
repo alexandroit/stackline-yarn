@@ -1,0 +1,1 @@
+module.exports = {presets: [['@babel/preset-env', {targets: {node: '20.19'}, modules: false}], '@babel/preset-flow'], plugins: ['./scripts/inline-template.cjs', ['@babel/plugin-transform-modules-commonjs', {lazy: () => true}]]};

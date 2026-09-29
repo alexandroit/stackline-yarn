@@ -8,7 +8,7 @@ import * as fs from '../../src/util/fs.js';
 import mkdir from '../_temp.js';
 const isCI = require('is-ci');
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 90000;
+jest.setTimeout(90000);
 
 const os = require('os');
 const path = require('path');
@@ -54,14 +54,14 @@ async function linkAt(config, ...relativePath): Promise<string> {
 
 // these tests have global folder side or prefix folder effects, run it only in CI
 if (isCI) {
-  test.concurrent('add without flag', (): Promise<void> => {
+  test('add without flag', (): Promise<void> => {
     return runGlobal(['add', 'react-native-cli'], {}, 'add-without-flag', async config => {
       expect(await fs.exists(path.join(config.globalFolder, 'node_modules', 'react-native-cli'))).toEqual(true);
       expect(await fs.exists(path.join(config.globalFolder, 'node_modules', '.bin', 'react-native'))).toEqual(true);
     });
   });
 
-  test.concurrent('add with prefix flag', (): Promise<void> => {
+  test('add with prefix flag', (): Promise<void> => {
     const tmpGlobalFolder = getTempGlobalFolder();
     return runGlobal(['add', 'react-native-cli'], {prefix: tmpGlobalFolder}, 'add-with-prefix-flag', async config => {
       expect(await fs.exists(getGlobalPath(tmpGlobalFolder, 'react-native'))).toEqual(true);
@@ -81,7 +81,7 @@ if (isCI) {
   });
 }
 
-test.concurrent("shouldn't expose unwanted binaries", async (): Promise<void> => {
+test("shouldn't expose unwanted binaries", async (): Promise<void> => {
   const tmpGlobalFolder = await createTempGlobalFolder();
   const tmpPrefixFolder = await createTempPrefixFolder();
   const flags = {globalFolder: tmpGlobalFolder, prefix: tmpPrefixFolder};
@@ -90,7 +90,7 @@ test.concurrent("shouldn't expose unwanted binaries", async (): Promise<void> =>
   });
 });
 
-test.concurrent("shouldn't create powershell shims", async (): Promise<void> => {
+test("shouldn't create powershell shims", async (): Promise<void> => {
   const tmpGlobalFolder = await createTempGlobalFolder();
   const tmpPrefixFolder = await createTempPrefixFolder();
   const flags = {globalFolder: tmpGlobalFolder, prefix: tmpPrefixFolder};
@@ -107,7 +107,7 @@ test.concurrent("shouldn't create powershell shims", async (): Promise<void> => 
   });
 });
 
-test.concurrent('bin', (): Promise<void> => {
+test('bin', (): Promise<void> => {
   const tmpGlobalFolder = getTempGlobalFolder();
   return runGlobal(
     ['bin'],
@@ -119,7 +119,7 @@ test.concurrent('bin', (): Promise<void> => {
   );
 });
 
-test.concurrent('add', async (): Promise<void> => {
+test('add', async (): Promise<void> => {
   const tmpGlobalFolder = await createTempGlobalFolder();
   const tmpPrefixFolder = await createTempPrefixFolder();
   const flags = {globalFolder: tmpGlobalFolder, prefix: tmpPrefixFolder};
@@ -128,7 +128,7 @@ test.concurrent('add', async (): Promise<void> => {
   });
 });
 
-test.concurrent('add (with scoped registry)', (): Promise<void> => {
+test('add (with scoped registry)', (): Promise<void> => {
   const flags = {enableDefaultRc: true};
   return runGlobal(['add', '@test-scope/scoped-module'], flags, 'add-with-scoped-registry', async config => {
     expect(await fs.exists(path.join(config.globalFolder, 'node_modules', '@test-scope', 'scoped-module'))).toEqual(
@@ -137,7 +137,7 @@ test.concurrent('add (with scoped registry)', (): Promise<void> => {
   });
 });
 
-test.concurrent('remove', async (): Promise<void> => {
+test('remove', async (): Promise<void> => {
   const tmpGlobalFolder = await createTempGlobalFolder();
   const tmpPrefixFolder = await createTempPrefixFolder();
   const flags = {globalFolder: tmpGlobalFolder, prefix: tmpPrefixFolder};
@@ -148,7 +148,7 @@ test.concurrent('remove', async (): Promise<void> => {
   });
 });
 
-test.concurrent('ls', async (): Promise<void> => {
+test('ls', async (): Promise<void> => {
   const tmpGlobalFolder = await createTempGlobalFolder();
   const tmpPrefixFolder = await createTempPrefixFolder();
   const flags = {globalFolder: tmpGlobalFolder, prefix: tmpPrefixFolder};
@@ -159,7 +159,7 @@ test.concurrent('ls', async (): Promise<void> => {
   });
 });
 
-test.concurrent('list', async (): Promise<void> => {
+test('list', async (): Promise<void> => {
   const tmpGlobalFolder = await createTempGlobalFolder();
   const tmpPrefixFolder = await createTempPrefixFolder();
   const flags = {globalFolder: tmpGlobalFolder, prefix: tmpPrefixFolder};
@@ -170,7 +170,7 @@ test.concurrent('list', async (): Promise<void> => {
   });
 });
 
-test.concurrent('upgrade', async (): Promise<void> => {
+test('upgrade', async (): Promise<void> => {
   const tmpGlobalFolder = await createTempGlobalFolder();
   const tmpPrefixFolder = await createTempPrefixFolder();
   const flags = {globalFolder: tmpGlobalFolder, prefix: tmpPrefixFolder};
@@ -188,7 +188,7 @@ test.concurrent('upgrade', async (): Promise<void> => {
   );
 });
 
-test.concurrent('symlink update', async (): Promise<void> => {
+test('symlink update', async (): Promise<void> => {
   const tmpGlobalFolder = await createTempGlobalFolder();
   const tmpPrefixFolder = await createTempPrefixFolder();
   const flags = {globalFolder: tmpGlobalFolder, prefix: tmpPrefixFolder};

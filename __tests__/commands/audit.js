@@ -51,7 +51,7 @@ const runAudit = buildRun.bind(
   },
 );
 
-test.concurrent('sends correct dependency map to audit api for single dependency.', () => {
+test('sends correct dependency map to audit api for single dependency.', () => {
   const expectedApiPost = {
     name: 'yarn-test',
     install: [],
@@ -217,7 +217,7 @@ test('audit groups only devDependencies omits dependencies from requires', () =>
 test('calls reporter auditAdvisory when using --level high flag', () => {
   return runAudit([], {level: 'high'}, 'single-vulnerable-dep-installed', (config, reporter) => {
     const apiResponse = getAuditResponse(config);
-    expect(reporter.auditAdvisory).toBeCalledWith(apiResponse.actions[0].resolves[0], apiResponse.advisories['118']);
+    expect(reporter.auditAdvisory).toHaveBeenCalledWith(apiResponse.actions[0].resolves[0], apiResponse.advisories['118']);
   });
 });
 
@@ -231,7 +231,7 @@ test(`doesn't call reporter auditAdvisory when using --level critical flag`, () 
 test('calls reporter auditAdvisory with correct data', () => {
   return runAudit([], {}, 'single-vulnerable-dep-installed', (config, reporter) => {
     const apiResponse = getAuditResponse(config);
-    expect(reporter.auditAdvisory).toBeCalledWith(apiResponse.actions[0].resolves[0], apiResponse.advisories['118']);
+    expect(reporter.auditAdvisory).toHaveBeenCalledWith(apiResponse.actions[0].resolves[0], apiResponse.advisories['118']);
   });
 });
 
@@ -239,7 +239,7 @@ test('calls reporter auditAdvisory with correct data', () => {
 // test('calls reporter auditAction with correct data', () => {
 //   return runAudit([], {}, 'single-vulnerable-dep-installed', (config, reporter) => {
 //     const apiResponse = getAuditResponse(config);
-//     expect(reporter.auditAction).toBeCalledWith({
+//     expect(reporter.auditAction).toHaveBeenCalledWith({
 //       cmd: 'yarn upgrade minimatch@3.0.4',
 //       isBreaking: false,
 //       action: apiResponse.actions[0],
@@ -250,11 +250,11 @@ test('calls reporter auditAdvisory with correct data', () => {
 test('calls reporter auditSummary with correct data', () => {
   return runAudit([], {}, 'single-vulnerable-dep-installed', (config, reporter) => {
     const apiResponse = getAuditResponse(config);
-    expect(reporter.auditSummary).toBeCalledWith(apiResponse.metadata);
+    expect(reporter.auditSummary).toHaveBeenCalledWith(apiResponse.metadata);
   });
 });
 
-test.concurrent('sends correct dependency map to audit api for private package.', () => {
+test('sends correct dependency map to audit api for private package.', () => {
   const expectedApiPost = {
     install: [],
     remove: [],
@@ -284,18 +284,18 @@ test.concurrent('sends correct dependency map to audit api for private package.'
 test('calls reporter auditAdvisory with correct data for private package', () => {
   return runAudit([], {}, 'single-vulnerable-dep-installed', (config, reporter) => {
     const apiResponse = getAuditResponse(config);
-    expect(reporter.auditAdvisory).toBeCalledWith(apiResponse.actions[0].resolves[0], apiResponse.advisories['118']);
+    expect(reporter.auditAdvisory).toHaveBeenCalledWith(apiResponse.actions[0].resolves[0], apiResponse.advisories['118']);
   });
 });
 
 test('calls reporter auditSummary with correct data for private package', () => {
   return runAudit([], {}, 'single-vulnerable-dep-installed', (config, reporter) => {
     const apiResponse = getAuditResponse(config);
-    expect(reporter.auditSummary).toBeCalledWith(apiResponse.metadata);
+    expect(reporter.auditSummary).toHaveBeenCalledWith(apiResponse.metadata);
   });
 });
 
-test.concurrent('distinguishes dev and prod transitive dependencies in audit request and result', () => {
+test('distinguishes dev and prod transitive dependencies in audit request and result', () => {
   const expectedApiPost = {
     name: 'foo',
     version: '1.0.0',
@@ -331,7 +331,7 @@ test.concurrent('distinguishes dev and prod transitive dependencies in audit req
     expect(calledWith).toEqual(expectedApiPost);
 
     const apiResponse = getAuditResponse(config);
-    expect(reporter.auditSummary).toBeCalledWith(apiResponse.metadata);
+    expect(reporter.auditSummary).toHaveBeenCalledWith(apiResponse.metadata);
   });
 });
 
@@ -387,7 +387,7 @@ describe('returns semantic exit codes', () => {
   });
 });
 
-test.concurrent('sends correct dependency map to audit api for workspaces.', () => {
+test('sends correct dependency map to audit api for workspaces.', () => {
   const expectedApiPost = {
     dependencies: {
       'balanced-match': {

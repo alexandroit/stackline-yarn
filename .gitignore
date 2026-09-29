@@ -25,3 +25,7 @@ test/fixtures/**/.fbkpm
 .pnp
 /packages/lockfile/index.js
 .vscode/
+
+.package-consumer/
+artifact/
+*.tgz

@@ -15,7 +15,7 @@ function runYarnStreaming(args: Array<string> = [], options: Object = {}): execa
   }
   options['env']['FORCE_COLOR'] = 0;
 
-  return execa.shell(sh`${path.resolve(__dirname, '../bin/yarn')} ${args}`, options);
+  return execa(path.resolve(__dirname, '../bin/yarn'), args, options);
 }
 
 test('terminate console stream quietly on EPIPE', async () => {

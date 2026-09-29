@@ -8,7 +8,7 @@ import type {CLIFunctionReturn} from '../../src/types.js';
 import mkdir from './../_temp.js';
 import * as fs from '../../src/util/fs.js';
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 150000;
+jest.setTimeout(150000);
 
 const path = require('path');
 
@@ -32,7 +32,7 @@ const runUnlink = buildRun.bind(
   },
 );
 
-test.concurrent('creates folder in linkFolder', async (): Promise<void> => {
+test('creates folder in linkFolder', async (): Promise<void> => {
   const linkFolder = await mkdir('link-folder');
 
   await runLink([], {linkFolder}, 'package-with-name', async (config, reporter): Promise<void> => {
@@ -46,7 +46,7 @@ test.concurrent('creates folder in linkFolder', async (): Promise<void> => {
   });
 });
 
-test.concurrent('throws error if package.json does not have name', async (): Promise<void> => {
+test('throws error if package.json does not have name', async (): Promise<void> => {
   const linkFolder = await mkdir('link-folder');
   const reporter = new ConsoleReporter({});
 
@@ -57,7 +57,7 @@ test.concurrent('throws error if package.json does not have name', async (): Pro
   }
 });
 
-test.concurrent('creates cmd file on Windows', async (): Promise<void> => {
+test('creates cmd file on Windows', async (): Promise<void> => {
   const linkFolder = await mkdir('link-folder');
   const prefix = await mkdir('prefix-folder');
 

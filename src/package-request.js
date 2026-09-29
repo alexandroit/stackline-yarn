@@ -1,5 +1,7 @@
 /* @flow */
 
+import containsPattern from './util/compat-pattern.js';
+
 import type {Dependency, DependencyRequestPattern, Manifest} from './types.js';
 import type {FetcherNames} from './fetchers/index.js';
 import type PackageResolver from './package-resolver.js';
@@ -26,7 +28,6 @@ import {normalizePattern} from './util/normalize-pattern.js';
 
 type ResolverRegistryNames = $Keys<typeof registryResolvers>;
 
-const micromatch = require('micromatch');
 
 export default class PackageRequest {
   constructor(req: DependencyRequestPattern, resolver: PackageResolver) {
@@ -398,7 +399,7 @@ export default class PackageRequest {
       depReqPatterns = depReqPatterns.filter(
         dep =>
           filterByNames.indexOf(normalizePattern(dep.pattern).name) >= 0 ||
-          (flags && flags.pattern && micromatch.contains(normalizePattern(dep.pattern).name, flags.pattern)),
+          (flags && flags.pattern && containsPattern(normalizePattern(dep.pattern).name, flags.pattern)),
       );
     }
 

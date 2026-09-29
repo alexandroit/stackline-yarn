@@ -16,7 +16,7 @@ export const OWNED_DEPENDENCY_TYPES = ['devDependencies', 'dependencies', 'optio
 export const RESOLUTIONS = 'resolutions';
 export const MANIFEST_FIELDS = [RESOLUTIONS, ...DEPENDENCY_TYPES];
 
-export const SUPPORTED_NODE_VERSIONS = '^4.8.0 || ^5.7.0 || ^6.2.2 || >=8.0.0';
+export const SUPPORTED_NODE_VERSIONS = '>=20.19.0';
 
 export const YARN_REGISTRY = 'https://registry.yarnpkg.com';
 export const NPM_REGISTRY_RE = /https?:\/\/registry\.npmjs\.org/g;

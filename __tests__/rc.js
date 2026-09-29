@@ -46,7 +46,7 @@ test('resolve .yarnrc args and handle --cwd arg inside .yarnrc', () => {
 test('resolve .yarnrc args and bail out of recursive --cwd args inside of .yarnrc', () => {
   expect(() => {
     getRcArgs('install', ['--cwd', path.join(fixturesLoc, 'recursive')]);
-  }).toThrowError();
+  }).toThrow();
 });
 
 test('resolve .yarnrc args and adds command name prefixed arguments', () => {

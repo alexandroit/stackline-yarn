@@ -10,7 +10,7 @@ import type {Manifest} from '../../src/types.js';
 import type {HoistManifestTuple, HoistManifestTuples} from '../../src/package-hoister.js';
 import type {LanguageKeys} from '../../src/reporters/lang/en.js';
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 90000;
+jest.setTimeout(90000);
 
 const fixturesLoc = path.join(__dirname, '..', 'fixtures', 'why');
 
@@ -36,7 +36,7 @@ async function runWhy(
   }
 }
 
-test.concurrent('throws error with no arguments', (): Promise<void> => {
+test('throws error with no arguments', (): Promise<void> => {
   const reporter = new reporters.ConsoleReporter({});
 
   return new Promise(async (resolve): Promise<void> => {
@@ -50,7 +50,7 @@ test.concurrent('throws error with no arguments', (): Promise<void> => {
   });
 });
 
-test.concurrent('throws error with too many arguments', (): Promise<void> => {
+test('throws error with too many arguments', (): Promise<void> => {
   const reporter = new reporters.ConsoleReporter({});
 
   return new Promise(async (resolve): Promise<void> => {
@@ -64,11 +64,11 @@ test.concurrent('throws error with too many arguments', (): Promise<void> => {
   });
 });
 
-test.concurrent("doesn't throw when using it inside a workspace", (): Promise<void> => {
+test("doesn't throw when using it inside a workspace", (): Promise<void> => {
   return runWhy({}, ['mime-types'], 'workspace');
 });
 
-test.concurrent('throws error if module does not exist', (): Promise<void> => {
+test('throws error if module does not exist', (): Promise<void> => {
   const reporter = new reporters.ConsoleReporter({});
 
   return new Promise(async (resolve): Promise<void> => {
@@ -82,28 +82,28 @@ test.concurrent('throws error if module does not exist', (): Promise<void> => {
   });
 });
 
-test.concurrent('should determine that the module installed because it is in dependencies', (): Promise<void> => {
+test('should determine that the module installed because it is in dependencies', (): Promise<void> => {
   return runWhy({}, ['mime-types'], 'basic', (config, reporter) => {
     const report = reporter.getBuffer();
     expect(report[report.length - 1].data).toEqual(reporter.lang('whySpecifiedSimple', 'dependencies'));
   });
 });
 
-test.concurrent('should determine that the module installed because it is in devDependencies', (): Promise<void> => {
+test('should determine that the module installed because it is in devDependencies', (): Promise<void> => {
   return runWhy({}, ['left-pad'], 'basic', (config, reporter) => {
     const report = reporter.getBuffer();
     expect(report[report.length - 1].data).toEqual(reporter.lang('whySpecifiedSimple', 'devDependencies'));
   });
 });
 
-test.concurrent('should determine that the module installed because mime-types depend on it', (): Promise<void> => {
+test('should determine that the module installed because mime-types depend on it', (): Promise<void> => {
   return runWhy({}, ['mime-db'], 'basic', (config, reporter) => {
     const report = reporter.getBuffer();
     expect((report[report.length - 1].data: any).items).toContainEqual(reporter.lang('whyDependedOn', 'mime-types'));
   });
 });
 
-test.concurrent('should determine that the module installed because it is hoisted from glob depend on it', (): Promise<
+test('should determine that the module installed because it is hoisted from glob depend on it', (): Promise<
   void,
 > => {
   return runWhy({}, ['glob#minimatch'], 'basic', (config, reporter) => {
@@ -155,7 +155,7 @@ describe('reports multiple occurrences', () => {
       _reporter,
     );
   }
-  test.concurrent('due to nohoist', (): Promise<void> => {
+  test('due to nohoist', (): Promise<void> => {
     const target = 'mime-types';
     return setupTest(target, (config, reporter) => {
       // check packages matched
@@ -192,7 +192,7 @@ describe('reports multiple occurrences', () => {
       expect(found2).toBeTruthy();
     });
   });
-  test.concurrent('due to version conflict', (): Promise<void> => {
+  test('due to version conflict', (): Promise<void> => {
     const target = 'uglifyify';
     return setupTest(target, (config, reporter) => {
       // check packages matched

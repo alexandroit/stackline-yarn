@@ -30,7 +30,7 @@ jest.mock('child_process', () => {
     }
   }
 
-  const realChildProcess = (require: any).requireActual('child_process');
+  const realChildProcess = jest.requireActual('child_process');
 
   realChildProcess.spawn = cmd => {
     const newChild = new MockedChildProcess();

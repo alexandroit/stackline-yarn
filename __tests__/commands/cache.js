@@ -9,7 +9,7 @@ const path = require('path');
 
 const fixturesLoc = path.join(__dirname, '..', 'fixtures', 'cache');
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 150000;
+jest.setTimeout(150000);
 
 const runCache = buildRun.bind(
   null,

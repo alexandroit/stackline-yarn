@@ -13,7 +13,7 @@ import * as constants from '../src/constants.js';
 import {explodeLockfile} from './commands/_helpers.js';
 import en from '../src/reporters/lang/en.js';
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 120000;
+jest.setTimeout(120000);
 
 const path = require('path');
 
@@ -22,7 +22,7 @@ if (!existsSync(path.resolve(__dirname, '../lib'))) {
 }
 
 function addTest(pattern, {strictPeers} = {strictPeers: false}, yarnArgs: Array<string> = []) {
-  test.concurrent(`yarn add ${pattern}`, async () => {
+  test(`yarn add ${pattern}`, async () => {
     const cwd = await makeTemp();
     const cacheFolder = path.join(cwd, 'cache');
 
@@ -87,7 +87,7 @@ async function runYarn(args: Array<string> = [], options: Object = {}): Promise<
     options['extendEnv'] = false;
   }
   options['env']['FORCE_COLOR'] = 0;
-  const {stdout, stderr} = await execa.shell(sh`${path.resolve(__dirname, '../bin/yarn')} ${args}`, options);
+  const {stdout, stderr} = await execa(path.resolve(__dirname, '../bin/yarn'), args, options);
 
   return [stdout, stderr];
 }
@@ -354,7 +354,7 @@ describe('yarnrc path', () => {
     try {
       await runYarn([], {cwd});
     } catch (err) {
-      error = err.code;
+      error = err.exitCode;
     }
 
     expect(error).toEqual(123);
@@ -377,7 +377,7 @@ describe('yarnrc path', () => {
     try {
       await runYarn([], {cwd});
     } catch (err) {
-      error = err.code;
+      error = err.exitCode;
     }
 
     expect(error).toEqual(123);
@@ -444,7 +444,7 @@ test('yarn run <failing script>', async () => {
     await runYarn(['run', 'false'], {cwd});
   } catch (e) {
     stderr = e.stderr.trim();
-    err = e.code;
+    err = e.exitCode;
   }
 
   expect(err).toEqual(1);
@@ -468,7 +468,7 @@ test('yarn run <failing script with custom exit code>', async () => {
     await runYarn(['run', 'false'], {cwd});
   } catch (e) {
     stderr = e.stderr.trim();
-    err = e.code;
+    err = e.exitCode;
   }
 
   expect(err).toEqual(78);

@@ -9,7 +9,7 @@ import makeTemp from './_temp.js';
 import * as fs from '../src/util/fs.js';
 import * as constants from '../src/constants.js';
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 90000;
+jest.setTimeout(90000);
 
 const path = require('path');
 
@@ -40,7 +40,7 @@ async function createEnv(configOptions): Object {
 }
 
 function addTest(pattern, registry = 'npm', init: ?(cacheFolder: string) => Promise<any>, offline = false) {
-  test.concurrent(`${offline ? 'offline ' : ''}resolve ${pattern}`, async () => {
+  test(`${offline ? 'offline ' : ''}resolve ${pattern}`, async () => {
     const {reporter, lockfile, config} = await createEnv({offline});
 
     if (init) {
@@ -93,7 +93,7 @@ addTest(
   true,
 ); // offline npm scoped package
 
-test.concurrent('addPattern does not add duplicates', async () => {
+test('addPattern does not add duplicates', async () => {
   const {reporter, lockfile, config} = await createEnv({});
   const resolver = new PackageResolver(config, lockfile);
   resolver.addPattern('patternOne', {name: 'name'});

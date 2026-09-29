@@ -3,8 +3,7 @@
 import {ignoreLinesToRegex, filterOverridenGitignores} from '../../src/util/filter.js';
 
 test('ignoreLinesToRegex', () => {
-  expect(
-    ignoreLinesToRegex([
+  const actual = ignoreLinesToRegex([
       'a',
       'b ',
       ' c ',
@@ -29,8 +28,8 @@ test('ignoreLinesToRegex', () => {
       '! E # ',
       '! F # # ',
       '#! G',
-    ]),
-  ).toEqual([
+    ]);
+  const expected = [
     {base: '.', isNegation: false, pattern: 'a', regex: /^(?:a)$/i},
     {base: '.', isNegation: false, pattern: 'b ', regex: /^(?:b)$/i},
     {base: '.', isNegation: false, pattern: ' c ', regex: /^(?:c)$/i},
@@ -58,7 +57,12 @@ test('ignoreLinesToRegex', () => {
     {base: '.', isNegation: true, pattern: ' D #', regex: /^(?:D #)$/i},
     {base: '.', isNegation: true, pattern: ' E # ', regex: /^(?:E #)$/i},
     {base: '.', isNegation: true, pattern: ' F # # ', regex: /^(?:F # #)$/i},
-  ]);
+  ];
+  expect(actual.map(({regex, ...value}) => value)).toEqual(expected.map(({regex, ...value}) => value));
+  const candidates = expected.flatMap(value => [value.pattern.trim(), value.pattern.toLowerCase().trim(), `x${value.pattern.trim()}`, `${value.pattern.trim()}x`, `nested/${value.pattern.trim()}`]);
+  for (let index = 0; index < expected.length; index++) {
+    for (const candidate of candidates) expect(actual[index].regex.test(candidate)).toBe(expected[index].regex.test(candidate));
+  }
 });
 
 test('filterOverridenGitignores', () => {

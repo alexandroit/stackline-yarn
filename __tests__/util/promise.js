@@ -33,7 +33,7 @@ test('promisify', async function(): Promise<void> {
 });
 
 test('queue', async function(): Promise<void> {
-  jest.useFakeTimers();
+  jest.useFakeTimers({legacyFakeTimers: true});
   let running = 0;
 
   function create(): Promise<void> {

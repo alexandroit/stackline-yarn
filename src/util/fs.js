@@ -817,7 +817,10 @@ export async function readFirstAvailableStream(paths: Iterable<string>): Promise
   for (const path of paths) {
     try {
       const fd = await open(path, 'r');
-      return fs.createReadStream(path, {fd});
+      const stream = fs.createReadStream(path, {fd});
+      // Node 24 omits .path when a descriptor is supplied; retain diagnostics.
+      stream.path = path;
+      return stream;
     } catch (err) {
       // Try the next one
     }

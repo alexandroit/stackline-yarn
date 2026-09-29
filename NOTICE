@@ -1,0 +1,8 @@
+This is an independent maintenance fork of Yarn Classic 1.22.22.
+Upstream source: https://github.com/yarnpkg/yarn
+Base commit: 740c38c3a962c30ddb344a919bbfb7065620714b
+Copyright (c) 2016-present, Yarn Contributors.
+The original BSD-2-Clause license and notices are retained in LICENSE.
+Stackline maintenance does not imply endorsement by Yarn or its contributors.
+Third-party runtime packages remain external, declared in package.json, and
+retain their own licenses in their installed npm packages.

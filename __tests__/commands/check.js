@@ -10,7 +10,7 @@ import * as fs from '../../src/util/fs.js';
 
 const path = require('path');
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 150000;
+jest.setTimeout(150000);
 
 const fixturesLoc = path.join(__dirname, '..', 'fixtures', 'check');
 
@@ -23,7 +23,7 @@ const runCheck = buildRun.bind(
   },
 );
 
-test.concurrent('--verify-tree should report wrong version', async (): Promise<void> => {
+test('--verify-tree should report wrong version', async (): Promise<void> => {
   let thrown = false;
   try {
     await runCheck([], {verifyTree: true}, 'verify-tree-version-mismatch');
@@ -33,7 +33,7 @@ test.concurrent('--verify-tree should report wrong version', async (): Promise<v
   expect(thrown).toEqual(true);
 });
 
-test.concurrent('--verify-tree should work from a workspace cwd', async (): Promise<void> => {
+test('--verify-tree should work from a workspace cwd', async (): Promise<void> => {
   let thrown = false;
   try {
     await runCheck([], {verifyTree: true}, {source: 'verify-tree-workspace-cwd', cwd: '/packages/workspace-1'});
@@ -43,7 +43,7 @@ test.concurrent('--verify-tree should work from a workspace cwd', async (): Prom
   expect(thrown).toEqual(false);
 });
 
-test.concurrent('--verify-tree should report missing dependency', async (): Promise<void> => {
+test('--verify-tree should report missing dependency', async (): Promise<void> => {
   let thrown = false;
   try {
     await runCheck([], {verifyTree: true}, 'verify-tree-not-found');
@@ -53,11 +53,11 @@ test.concurrent('--verify-tree should report missing dependency', async (): Prom
   expect(thrown).toEqual(true);
 });
 
-test.concurrent('--verify-tree should pass on hoisted dependency ', async (): Promise<void> => {
+test('--verify-tree should pass on hoisted dependency ', async (): Promise<void> => {
   await runCheck([], {verifyTree: true}, 'verify-tree-hoisted');
 });
 
-test.concurrent('--verify-tree should check dev dependencies ', async (): Promise<void> => {
+test('--verify-tree should check dev dependencies ', async (): Promise<void> => {
   let thrown = false;
   try {
     await runCheck([], {verifyTree: true, production: false}, 'verify-tree-dev');
@@ -67,17 +67,17 @@ test.concurrent('--verify-tree should check dev dependencies ', async (): Promis
   expect(thrown).toEqual(true);
 });
 
-test.concurrent('--verify-tree should check skip dev dependencies if --production flag passed', async (): Promise<
+test('--verify-tree should check skip dev dependencies if --production flag passed', async (): Promise<
   void,
 > => {
   await runCheck([], {verifyTree: true, production: true}, 'verify-tree-dev-prod');
 });
 
-test.concurrent('--verify-tree should check skip deeper dev dependencies', async (): Promise<void> => {
+test('--verify-tree should check skip deeper dev dependencies', async (): Promise<void> => {
   await runCheck([], {verifyTree: true, production: true}, 'verify-tree-dev-deep');
 });
 
-test.concurrent('--integrity should ignore comments and whitespaces in yarn.lock', async (): Promise<void> => {
+test('--integrity should ignore comments and whitespaces in yarn.lock', async (): Promise<void> => {
   await runInstall({}, path.join('..', 'check', 'integrity-lock-check'), async (config, reporter): Promise<void> => {
     let lockfile = await fs.readFile(path.join(config.cwd, 'yarn.lock'));
     lockfile += "\n# ADDING THIS COMMENT WON'T AFFECT INTEGRITY CHECK \n";
@@ -93,7 +93,7 @@ test.concurrent('--integrity should ignore comments and whitespaces in yarn.lock
   });
 });
 
-test.concurrent('--integrity should fail if integrity file is missing', async (): Promise<void> => {
+test('--integrity should fail if integrity file is missing', async (): Promise<void> => {
   await runInstall({}, path.join('..', 'check', 'integrity-lock-check'), async (config, reporter): Promise<void> => {
     await fs.unlink(path.join(config.cwd, 'node_modules', '.yarn-integrity'));
 
@@ -107,7 +107,7 @@ test.concurrent('--integrity should fail if integrity file is missing', async ()
   });
 });
 
-test.concurrent('--integrity should fail if integrity file is not a json', async (): Promise<void> => {
+test('--integrity should fail if integrity file is not a json', async (): Promise<void> => {
   await runInstall(
     {},
     path.join('..', 'check', 'integrity-lock-check'),
@@ -126,7 +126,7 @@ test.concurrent('--integrity should fail if integrity file is not a json', async
   );
 });
 
-test.concurrent('--integrity should fail if yarn.lock has patterns changed', async (): Promise<void> => {
+test('--integrity should fail if yarn.lock has patterns changed', async (): Promise<void> => {
   await runInstall({}, path.join('..', 'check', 'integrity-lock-check'), async (config, reporter): Promise<void> => {
     let lockfile = await fs.readFile(path.join(config.cwd, 'yarn.lock'));
     lockfile = lockfile.replace('left-pad@1.1.1', 'left-pad@1.1.0');
@@ -142,7 +142,7 @@ test.concurrent('--integrity should fail if yarn.lock has patterns changed', asy
   });
 });
 
-test.concurrent('--integrity should fail if yarn.lock has new pattern', async (): Promise<void> => {
+test('--integrity should fail if yarn.lock has new pattern', async (): Promise<void> => {
   await runInstall(
     {},
     path.join('..', 'check', 'integrity-lock-check'),
@@ -165,7 +165,7 @@ test.concurrent('--integrity should fail if yarn.lock has new pattern', async ()
   );
 });
 
-test.concurrent('--integrity should fail if yarn.lock has resolved changed', async (): Promise<void> => {
+test('--integrity should fail if yarn.lock has resolved changed', async (): Promise<void> => {
   await runInstall(
     {},
     path.join('..', 'check', 'integrity-lock-check'),
@@ -189,7 +189,7 @@ test.concurrent('--integrity should fail if yarn.lock has resolved changed', asy
   );
 });
 
-test.concurrent('--integrity should fail if files are missing and --check-files is passed', async (): Promise<void> => {
+test('--integrity should fail if files are missing and --check-files is passed', async (): Promise<void> => {
   await runInstall(
     {checkFiles: true},
     path.join('..', 'check', 'integrity-lock-check'),
@@ -208,7 +208,7 @@ test.concurrent('--integrity should fail if files are missing and --check-files 
   );
 });
 
-test.concurrent('--integrity should fail if --ignore-scripts is changed', async (): Promise<void> => {
+test('--integrity should fail if --ignore-scripts is changed', async (): Promise<void> => {
   await runInstall(
     {ignoreScripts: true},
     path.join('..', 'check', 'integrity-lock-check'),
@@ -226,7 +226,7 @@ test.concurrent('--integrity should fail if --ignore-scripts is changed', async 
   );
 });
 
-test.concurrent('when switching to --check-files install should rebuild integrity file', async (): Promise<void> => {
+test('when switching to --check-files install should rebuild integrity file', async (): Promise<void> => {
   await runInstall({}, path.join('..', 'check', 'integrity-lock-check'), async (config, reporter): Promise<void> => {
     await fs.unlink(path.join(config.cwd, 'node_modules', 'left-pad', 'index.js'));
 
@@ -268,7 +268,7 @@ test.concurrent('when switching to --check-files install should rebuild integrit
   });
 });
 
-test.concurrent('--integrity should fail if integrity file have different linkedModules', async (): Promise<void> => {
+test('--integrity should fail if integrity file have different linkedModules', async (): Promise<void> => {
   await runInstall(
     {},
     path.join('..', 'check', 'integrity-lock-check'),
@@ -290,7 +290,7 @@ test.concurrent('--integrity should fail if integrity file have different linked
   );
 });
 
-test.concurrent('--integrity should fail if integrity file has different systemParams', async (): Promise<void> => {
+test('--integrity should fail if integrity file has different systemParams', async (): Promise<void> => {
   await runInstall(
     {},
     path.join('..', 'check', 'integrity-lock-check'),
@@ -312,7 +312,7 @@ test.concurrent('--integrity should fail if integrity file has different systemP
   );
 });
 
-test.concurrent('--integrity should create the integrity file under the meta folder if enabled', async (): Promise<
+test('--integrity should create the integrity file under the meta folder if enabled', async (): Promise<
   void,
 > => {
   await runInstall(
@@ -325,7 +325,7 @@ test.concurrent('--integrity should create the integrity file under the meta fol
   );
 });
 
-test.concurrent('--check-files should register the right entries even when using the meta folder', async (): Promise<
+test('--check-files should register the right entries even when using the meta folder', async (): Promise<
   void,
 > => {
   await runInstall(
@@ -340,7 +340,7 @@ test.concurrent('--check-files should register the right entries even when using
 });
 
 // https://github.com/yarnpkg/yarn/issues/3276
-test.concurrent('--integrity --check-files should not die on broken symlinks', async (): Promise<void> => {
+test('--integrity --check-files should not die on broken symlinks', async (): Promise<void> => {
   await runInstall(
     {checkFiles: true, binLinks: true},
     path.join('..', 'check', 'integrity-symlinks'),
@@ -363,7 +363,7 @@ test.concurrent('--integrity --check-files should not die on broken symlinks', a
   );
 });
 
-test.concurrent('--integrity should not die on missing fields in integrity file', async (): Promise<void> => {
+test('--integrity should not die on missing fields in integrity file', async (): Promise<void> => {
   let integrityError = false;
   try {
     await runCheck([], {integrity: true}, 'missing-fields');
@@ -373,7 +373,7 @@ test.concurrent('--integrity should not die on missing fields in integrity file'
   expect(integrityError).toEqual(false);
 });
 
-test.concurrent('should ignore bundled dependencies', async (): Promise<void> => {
+test('should ignore bundled dependencies', async (): Promise<void> => {
   await runInstall(
     {},
     path.join('..', 'check', 'bundled-dep-check'),
@@ -384,7 +384,7 @@ test.concurrent('should ignore bundled dependencies', async (): Promise<void> =>
   );
 });
 
-test.concurrent('should warn about mismatched dependencies if they match resolutions (simple)', async (): Promise<
+test('should warn about mismatched dependencies if they match resolutions (simple)', async (): Promise<
   void,
 > => {
   let mismatchError = false;
@@ -404,7 +404,7 @@ test.concurrent('should warn about mismatched dependencies if they match resolut
   ).toBeGreaterThan(-1);
 });
 
-test.concurrent('should warn about mismatched dependencies if they match resolutions (tree)', async (): Promise<
+test('should warn about mismatched dependencies if they match resolutions (tree)', async (): Promise<
   void,
 > => {
   let mismatchError = false;
@@ -424,7 +424,7 @@ test.concurrent('should warn about mismatched dependencies if they match resolut
   ).toBeGreaterThan(-1);
 });
 
-test.concurrent('should warn about mismatched dependencies if they match resolutions (glob)', async (): Promise<
+test('should warn about mismatched dependencies if they match resolutions (glob)', async (): Promise<
   void,
 > => {
   let mismatchError = false;
@@ -444,7 +444,7 @@ test.concurrent('should warn about mismatched dependencies if they match resolut
   ).toBeGreaterThan(-1);
 });
 
-test.concurrent('--integrity should throw an error if top level patterns do not match', async (): Promise<void> => {
+test('--integrity should throw an error if top level patterns do not match', async (): Promise<void> => {
   let integrityError = false;
   try {
     await runCheck([], {integrity: true}, 'integrity-top-level-patters');

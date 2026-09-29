@@ -1,0 +1,1 @@
+Local HTTPS test fixtures only. The deliberately public test server/client keys and certificates are never packaged or used outside isolated test servers. Refreshed in September 2026 because the historical certificates expired; TLS and mutual-TLS verification remain enabled. The CA private keys were discarded.

@@ -157,7 +157,7 @@ test('ConsoleReporter.select', async () => {
 });
 
 test('ConsoleReporter.progress', async () => {
-  jest.useFakeTimers();
+  jest.useFakeTimers({legacyFakeTimers: true});
   expect(
     await getConsoleBuff(r => {
       r.noProgress = false; // we need this to override is-ci when running tests on ci
@@ -248,7 +248,7 @@ test('Spinner', () => {
 });
 
 test('close', async () => {
-  jest.useFakeTimers();
+  jest.useFakeTimers({legacyFakeTimers: true});
   expect(
     await getConsoleBuff(r => {
       r.noProgress = false; // we need this to override is-ci when running tests on ci

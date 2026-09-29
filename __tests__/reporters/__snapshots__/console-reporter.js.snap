@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`ConsoleReporter.activity 1`] = `
 Object {
@@ -105,7 +105,7 @@ Object {
   "stdout": "[2K[1G[34minfo[39m Ayo?
 [2K[1G  [2m1)[22m foo
 [2K[1G  [2m2)[22m bar
-[1G[0JSelect one: [13G1",
+Select one: 1",
 }
 `;
 

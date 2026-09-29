@@ -200,7 +200,8 @@ test('Lockfile.getLockfile (sorting)', () => {
   const actual = new Lockfile().getLockfile(patterns);
 
   const expectedFoobar = {
-    name: 'foobar',
+    // Classic 1.22.22's published bundle also omits this redundant name.
+    name: undefined,
     version: '0.0.0',
     uid: undefined,
     resolved: 'http://example.com/foobar',

@@ -5,7 +5,7 @@ import {run as buildRun} from './_helpers.js';
 import {run as upgradeInteractive} from '../../src/cli/commands/upgrade-interactive.js';
 import * as reporters from '../../src/reporters/index.js';
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 90000;
+jest.setTimeout(90000);
 
 const path = require('path');
 
@@ -15,7 +15,7 @@ const runUpgrade = buildRun.bind(null, ConsoleReporter, fixturesLoc, (args, flag
   return upgradeInteractive(config, reporter, flags, args);
 });
 
-test.concurrent('throws if lockfile is out of date', (): Promise<void> => {
+test('throws if lockfile is out of date', (): Promise<void> => {
   const reporter = new reporters.ConsoleReporter({});
   return new Promise(async resolve => {
     try {
@@ -28,7 +28,7 @@ test.concurrent('throws if lockfile is out of date', (): Promise<void> => {
   });
 });
 
-test.concurrent('exits with success if no upgrades', (): Promise<void> => {
+test('exits with success if no upgrades', (): Promise<void> => {
   const reporter = new reporters.ConsoleReporter({});
   return runUpgrade([], {}, 'up-to-date', (config, rep, install, output): ?Promise<void> => {
     expect(output()).toContain(reporter.lang('allDependenciesUpToDate'));

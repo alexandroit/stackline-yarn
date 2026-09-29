@@ -7,7 +7,7 @@ import {run as remove} from '../../src/cli/commands/remove.js';
 import * as fs from '../../src/util/fs.js';
 import * as reporters from '../../src/reporters/index.js';
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 90000;
+jest.setTimeout(90000);
 
 const path = require('path');
 
@@ -19,7 +19,7 @@ const runRemove = buildRun.bind(null, ConsoleReporter, fixturesLoc, async (args,
   await check(config, reporter, {verifyTree: true}, []);
 });
 
-test.concurrent('throws error with no arguments', (): Promise<void> => {
+test('throws error with no arguments', (): Promise<void> => {
   const reporter = new reporters.ConsoleReporter({});
 
   return new Promise(async (resolve): Promise<void> => {
@@ -33,7 +33,7 @@ test.concurrent('throws error with no arguments', (): Promise<void> => {
   });
 });
 
-test.concurrent('throws error when package is not found', (): Promise<void> => {
+test('throws error when package is not found', (): Promise<void> => {
   const reporter = new reporters.ConsoleReporter({});
 
   return new Promise(async (resolve): Promise<void> => {
@@ -47,7 +47,7 @@ test.concurrent('throws error when package is not found', (): Promise<void> => {
   });
 });
 
-test.concurrent('remove without --ignore-workspace-root-check should fail on the workspace root', async () => {
+test('remove without --ignore-workspace-root-check should fail on the workspace root', async () => {
   await runInstall({}, 'workspaces-install-basic', async (config, reporter): Promise<void> => {
     await expect(remove(config, reporter, {}, ['left-pad'])).rejects.toThrow(
       reporter.lang('workspacesRemoveRootCheck'),
@@ -55,13 +55,13 @@ test.concurrent('remove without --ignore-workspace-root-check should fail on the
   });
 });
 
-test.concurrent("remove with --ignore-workspace-root-check shouldn't fail on the workspace root", async () => {
+test("remove with --ignore-workspace-root-check shouldn't fail on the workspace root", async () => {
   await runInstall({}, 'workspaces-install-basic', async (config, reporter): Promise<void> => {
     await expect(remove(config, reporter, {ignoreWorkspaceRootCheck: true}, ['left-pad'])).resolves.toBeUndefined();
   });
 });
 
-test.concurrent('removes package installed from npm registry', (): Promise<void> => {
+test('removes package installed from npm registry', (): Promise<void> => {
   return runRemove(['dep-a'], {}, 'npm-registry', async (config): Promise<void> => {
     expect(await fs.exists(path.join(config.cwd, 'node_modules/dep-a'))).toEqual(false);
 
@@ -73,7 +73,7 @@ test.concurrent('removes package installed from npm registry', (): Promise<void>
   });
 });
 
-test.concurrent('removes multiple installed packages', (): Promise<void> => {
+test('removes multiple installed packages', (): Promise<void> => {
   const args: Array<string> = ['dep-a', 'max-safe-integer'];
 
   return runRemove(args, {}, 'multiple-packages', async (config): Promise<void> => {
@@ -88,7 +88,7 @@ test.concurrent('removes multiple installed packages', (): Promise<void> => {
   });
 });
 
-test.concurrent('removes the whole scope when all scoped packages are removed', (): Promise<void> => {
+test('removes the whole scope when all scoped packages are removed', (): Promise<void> => {
   return runRemove(['@dengorbachev/foo', '@dengorbachev/bar'], {}, 'scoped-package', async (config): Promise<void> => {
     expect(await fs.exists(path.join(config.cwd, 'node_modules/@dengorbachev'))).toEqual(false);
 
@@ -100,7 +100,7 @@ test.concurrent('removes the whole scope when all scoped packages are removed', 
   });
 });
 
-test.concurrent('removes a single scoped package', (): Promise<void> => {
+test('removes a single scoped package', (): Promise<void> => {
   return runRemove(['@dengorbachev/foo'], {}, 'scoped-package', async (config): Promise<void> => {
     expect(await fs.exists(path.join(config.cwd, 'node_modules/@dengorbachev/foo'))).toEqual(false);
 
@@ -138,7 +138,7 @@ test('removes subdependencies', (): Promise<void> => {
   });
 });
 
-test.concurrent('can prune the offline mirror', (): Promise<void> => {
+test('can prune the offline mirror', (): Promise<void> => {
   return runRemove(['dep-a'], {}, 'prune-offline-mirror', async (config, reporter) => {
     const mirrorPath = 'mirror-for-offline';
     expect(await fs.exists(path.join(config.cwd, `${mirrorPath}/dep-a-1.0.0.tgz`))).toEqual(false);
@@ -148,7 +148,7 @@ test.concurrent('can prune the offline mirror', (): Promise<void> => {
   });
 });
 
-test.concurrent('removes package installed without a manifest', (): Promise<void> => {
+test('removes package installed without a manifest', (): Promise<void> => {
   return runRemove(['dep-a'], {}, 'without-manifest', async (config): Promise<void> => {
     expect(await fs.exists(path.join(config.cwd, 'node_modules/dep-a'))).toEqual(false);
 
@@ -160,7 +160,7 @@ test.concurrent('removes package installed without a manifest', (): Promise<void
   });
 });
 
-test.concurrent('removes from workspace packages', async () => {
+test('removes from workspace packages', async () => {
   await runInstall({}, 'workspaces-install-basic', async (config, reporter): Promise<void> => {
     expect(await fs.exists(`${config.cwd}/node_modules/isarray`)).toEqual(true);
     expect(await fs.exists(`${config.cwd}/workspace-child/node_modules/isarray`)).toEqual(false);
@@ -184,7 +184,7 @@ test.concurrent('removes from workspace packages', async () => {
   });
 });
 
-test.concurrent('preserves unaffected bin links after removing workspace packages', async () => {
+test('preserves unaffected bin links after removing workspace packages', async () => {
   await runInstall({binLinks: true}, 'workspaces-install-bin', async (config, reporter): Promise<void> => {
     expect(await fs.exists(`${config.cwd}/node_modules/.bin/rimraf`)).toEqual(true);
     expect(await fs.exists(`${config.cwd}/node_modules/.bin/touch`)).toEqual(true);

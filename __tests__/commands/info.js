@@ -6,7 +6,7 @@ import {BufferReporter} from '../../src/reporters/index.js';
 import Config from '../../src/config.js';
 import path from 'path';
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 90000;
+jest.setTimeout(90000);
 
 const fixturesLoc = path.join(__dirname, '..', 'fixtures', 'info');
 

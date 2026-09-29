@@ -5,9 +5,9 @@ import * as fs from '../../../src/util/fs.js';
 
 const path = require('path');
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 150000;
+jest.setTimeout(150000);
 
-test.concurrent('install should dedupe dependencies avoiding conflicts 0', (): Promise<void> => {
+test('install should dedupe dependencies avoiding conflicts 0', (): Promise<void> => {
   // A@2.0.1 -> B@2.0.0
   // B@1.0.0
   // should result in B@2.0.0 not flattened
@@ -17,7 +17,7 @@ test.concurrent('install should dedupe dependencies avoiding conflicts 0', (): P
   });
 });
 
-test.concurrent('install should dedupe dependencies avoiding conflicts 1', (): Promise<void> => {
+test('install should dedupe dependencies avoiding conflicts 1', (): Promise<void> => {
   // A@2.0.1 -> B@2.0.0
   // should result in B@2.0.0 flattened
   return runInstall({}, 'install-should-dedupe-avoiding-conflicts-1', async config => {
@@ -26,7 +26,7 @@ test.concurrent('install should dedupe dependencies avoiding conflicts 1', (): P
   });
 });
 
-test.concurrent('install should dedupe dependencies avoiding conflicts 2', (): Promise<void> => {
+test('install should dedupe dependencies avoiding conflicts 2', (): Promise<void> => {
   // A@2 -> B@2 -> C@2
   //            -> D@1
   // B@1 -> C@1
@@ -48,7 +48,7 @@ test.concurrent('install should dedupe dependencies avoiding conflicts 2', (): P
   });
 });
 
-test.concurrent('install should dedupe dependencies avoiding conflicts 3', (): Promise<void> => {
+test('install should dedupe dependencies avoiding conflicts 3', (): Promise<void> => {
   // A@2 -> B@2 -> C@2
   //            -> D@1
   //     -> C@1
@@ -66,7 +66,7 @@ test.concurrent('install should dedupe dependencies avoiding conflicts 3', (): P
   });
 });
 
-test.concurrent('install should dedupe dependencies avoiding conflicts 4', (): Promise<void> => {
+test('install should dedupe dependencies avoiding conflicts 4', (): Promise<void> => {
   // A@2 -> B@2 -> D@1 -> C@2
   //
   //     -> C@1
@@ -85,7 +85,7 @@ test.concurrent('install should dedupe dependencies avoiding conflicts 4', (): P
   });
 });
 
-test.concurrent('install should dedupe dependencies avoiding conflicts 5', (): Promise<void> => {
+test('install should dedupe dependencies avoiding conflicts 5', (): Promise<void> => {
   // A@1 -> B@1
   // C@1 -> D@1 -> A@2 -> B@2
 
@@ -107,7 +107,7 @@ test.concurrent('install should dedupe dependencies avoiding conflicts 5', (): P
   });
 });
 
-test.concurrent('install should dedupe dependencies avoiding conflicts 6 (jest/jest-runtime case)', (): Promise<
+test('install should dedupe dependencies avoiding conflicts 6 (jest/jest-runtime case)', (): Promise<
   void,
 > => {
   // C@1 -> D@1 -> E@1
@@ -134,7 +134,7 @@ test.concurrent('install should dedupe dependencies avoiding conflicts 6 (jest/j
   });
 });
 
-test.concurrent('install should dedupe dependencies avoiding conflicts 7', (): Promise<void> => {
+test('install should dedupe dependencies avoiding conflicts 7', (): Promise<void> => {
   // A@1 -> C@1 -> D@1 -> E@1
   // B@1 -> C@1 -> D@1 -> E@1
   // C@2
@@ -172,7 +172,7 @@ test.concurrent('install should dedupe dependencies avoiding conflicts 7', (): P
 
 if (!process.env.TRAVIS || process.env.TRAVIS_OS_NAME !== 'osx') {
   // This test is unstable and timeouts on Travis OSX builds https://travis-ci.org/yarnpkg/yarn/jobs/188864079
-  test.concurrent('install should dedupe dependencies avoiding conflicts 8', (): Promise<void> => {
+  test('install should dedupe dependencies avoiding conflicts 8', (): Promise<void> => {
     // revealed in https://github.com/yarnpkg/yarn/issues/112
     // adapted for https://github.com/yarnpkg/yarn/issues/1158
     return runInstall({}, 'install-should-dedupe-avoiding-conflicts-8', async config => {
@@ -186,7 +186,7 @@ if (!process.env.TRAVIS || process.env.TRAVIS_OS_NAME !== 'osx') {
   });
 }
 
-test.concurrent('install should dedupe dependencies avoiding conflicts 9', (): Promise<void> => {
+test('install should dedupe dependencies avoiding conflicts 9', (): Promise<void> => {
   // revealed in https://github.com/yarnpkg/yarn/issues/112
   // adapted for https://github.com/yarnpkg/yarn/issues/1158
   return runInstall({}, 'install-should-dedupe-avoiding-conflicts-9', async config => {
@@ -200,7 +200,7 @@ test.concurrent('install should dedupe dependencies avoiding conflicts 9', (): P
 });
 
 describe('hardlink', () => {
-  test.concurrent('install should hardlink repeated dependencies', (): Promise<void> => {
+  test('install should hardlink repeated dependencies', (): Promise<void> => {
     // A@1
     // B@1 -> A@2
     // C@1 -> A@2 (this is hardlink to B@1->A@2)
@@ -211,7 +211,7 @@ describe('hardlink', () => {
     });
   });
 
-  test.concurrent('install should not hardlink repeated dependencies if linkDuplicates=false', (): Promise<void> => {
+  test('install should not hardlink repeated dependencies if linkDuplicates=false', (): Promise<void> => {
     // A@1
     // B@1 -> A@2
     // C@1 -> A@2
@@ -222,7 +222,7 @@ describe('hardlink', () => {
     });
   });
 
-  test.concurrent('install should not crash when hardlinking deep structures', (): Promise<void> => {
+  test('install should not crash when hardlinking deep structures', (): Promise<void> => {
     // https://github.com/yarnpkg/yarn/issues/2734
     // A@1 -> B@1 -> C@1
     //     -> C@2
@@ -240,7 +240,7 @@ describe('hardlink', () => {
     });
   });
 
-  test.concurrent('install should consider different hoisting with --link-duplicate', (): Promise<void> => {
+  test('install should consider different hoisting with --link-duplicate', (): Promise<void> => {
     // https://github.com/yarnpkg/yarn/issues/2734
     // A@1 -> B@1 -> C@1
     //     -> C@2
@@ -262,7 +262,7 @@ describe('hardlink', () => {
     });
   });
 
-  test.concurrent('install should consider different hoisting with --link-duplicate 2', (): Promise<void> => {
+  test('install should consider different hoisting with --link-duplicate 2', (): Promise<void> => {
     // https://github.com/yarnpkg/yarn/issues/2734
     // A@1 -> B@1
     //     -> C@1
@@ -280,7 +280,7 @@ describe('hardlink', () => {
     });
   });
 
-  test.concurrent('install should not hardlink full package structure', (): Promise<void> => {
+  test('install should not hardlink full package structure', (): Promise<void> => {
     // https://github.com/yarnpkg/yarn/issues/2734
     // A@1 -> B@1 -> C@1 -> (bundle leftpad)
     //     -> C@2
@@ -315,7 +315,7 @@ describe('hardlink', () => {
     //    a-1
     //    b-1 -> a-1
     //    c-1
-    test.concurrent('no hardlink for workspace references and linked dependencies', (): Promise<void> => {
+    test('no hardlink for workspace references and linked dependencies', (): Promise<void> => {
       // when no conflict, everything should be hoisted to the top without exception
       return runInstall(
         {linkDuplicates: true, workspacesNohoistEnabled: false},
@@ -352,7 +352,7 @@ describe('hardlink', () => {
         },
       );
     });
-    test.concurrent('should work with nohoist', (): Promise<void> => {
+    test('should work with nohoist', (): Promise<void> => {
       // https://github.com/yarnpkg/yarn/issues/5421
       // nohoist everything should put all dependencies under each workspaces's
       // local node_modules and hardlink accordingly

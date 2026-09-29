@@ -6,13 +6,13 @@ describe(`parsePackageName`, () => {
   test('invalid', () => {
     expect(() => {
       parsePackageName('@/name');
-    }).toThrowError(`Scope should not be empty, got "@/name"`);
+    }).toThrow(`Scope should not be empty, got "@/name"`);
     expect(() => {
       parsePackageName('/name');
-    }).toThrowError(`Name should not start with "/", got "/name"`);
+    }).toThrow(`Name should not start with "/", got "/name"`);
     expect(() => {
       parsePackageName('./name');
-    }).toThrowError(`Name should not start with ".", got "./name"`);
+    }).toThrow(`Name should not start with ".", got "./name"`);
   });
 
   test('basic', () => {

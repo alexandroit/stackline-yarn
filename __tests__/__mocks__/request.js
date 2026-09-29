@@ -9,7 +9,7 @@ type RequestModule = {
   Request: any,
 };
 
-const realRequest: RequestModule = (require: any).requireActual('request');
+const realRequest: RequestModule = jest.requireActual('request');
 const RealRequest = realRequest.Request;
 
 const mkdirp = require('mkdirp');

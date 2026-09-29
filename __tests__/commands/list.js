@@ -8,7 +8,7 @@ import {run as buildRun} from './_helpers.js';
 import {getParent, getReqDepth, run as list} from '../../src/cli/commands/list.js';
 import * as reporters from '../../src/reporters/index.js';
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 90000;
+jest.setTimeout(90000);
 
 function makeTree(name, {children = [], hint = null, color = null, depth = 0}: Object = {}): Tree {
   return {
@@ -26,7 +26,7 @@ const runList = buildRun.bind(null, BufferReporter, fixturesLoc, (args, flags, c
 });
 
 describe('list', () => {
-  test.concurrent('throws if lockfile out of date', (): Promise<void> => {
+  test('throws if lockfile out of date', (): Promise<void> => {
     const reporter = new reporters.ConsoleReporter({});
 
     return new Promise(async resolve => {
@@ -40,7 +40,7 @@ describe('list', () => {
     });
   });
 
-  test.concurrent('lists everything with no args', (): Promise<void> => {
+  test('lists everything with no args', (): Promise<void> => {
     return runList([], {}, 'no-args', (config, reporter): ?Promise<void> => {
       const rprtr = new BufferReporter({});
       const tree = reporter.getBuffer().slice(-1);
@@ -57,7 +57,7 @@ describe('list', () => {
     });
   });
 
-  test.concurrent('respects depth flag', (): Promise<void> => {
+  test('respects depth flag', (): Promise<void> => {
     return runList([], {depth: 1}, 'depth-flag', (config, reporter): ?Promise<void> => {
       const rprtr = new BufferReporter({});
       const tree = reporter.getBuffer().slice(-1);
@@ -69,7 +69,7 @@ describe('list', () => {
     });
   });
 
-  test.concurrent('accepts an argument', (): Promise<void> => {
+  test('accepts an argument', (): Promise<void> => {
     return runList(['is-plain-obj'], {}, 'one-arg', (config, reporter): ?Promise<void> => {
       const rprtr = new BufferReporter({});
       const tree = reporter.getBuffer().slice(-1);
@@ -81,7 +81,7 @@ describe('list', () => {
     });
   });
 
-  test.concurrent('accepts a pattern', (): Promise<void> => {
+  test('accepts a pattern', (): Promise<void> => {
     return runList([], {pattern: 'is-plain-obj'}, 'one-arg', (config, reporter): ?Promise<void> => {
       const rprtr = new BufferReporter({});
       const tree = reporter.getBuffer().slice(-1);
@@ -93,7 +93,7 @@ describe('list', () => {
     });
   });
 
-  test.concurrent('should not throw when list is called with resolutions field', (): Promise<void> => {
+  test('should not throw when list is called with resolutions field', (): Promise<void> => {
     return runList([], {}, {source: '', cwd: 'resolutions'}, (config, reporter): ?Promise<void> => {
       const rprtr = new BufferReporter({});
       const tree = reporter.getBuffer().slice(-1);
@@ -106,7 +106,7 @@ describe('list', () => {
     });
   });
 
-  test.concurrent('respects depth flag', (): Promise<void> => {
+  test('respects depth flag', (): Promise<void> => {
     return runList([], {depth: 1}, 'depth-flag', (config, reporter): ?Promise<void> => {
       const rprtr = new BufferReporter({});
       const tree = reporter.getBuffer().slice(-1);
@@ -118,7 +118,7 @@ describe('list', () => {
     });
   });
 
-  test.concurrent('matches exactly without glob in argument', (): Promise<void> => {
+  test('matches exactly without glob in argument', (): Promise<void> => {
     return runList(['gulp'], {}, 'glob-arg', (config, reporter): ?Promise<void> => {
       const rprtr = new BufferReporter({});
       const tree = reporter.getBuffer().slice(-1);
@@ -135,7 +135,7 @@ describe('list', () => {
     });
   });
 
-  test.concurrent('expands a glob in argument', (): Promise<void> => {
+  test('expands a glob in argument', (): Promise<void> => {
     return runList(['gulp*'], {}, 'glob-arg', (config, reporter): ?Promise<void> => {
       const rprtr = new BufferReporter({});
       const tree = reporter.getBuffer().slice(-1);
@@ -147,7 +147,7 @@ describe('list', () => {
     });
   });
 
-  test.concurrent('expands a glob in pattern', (): Promise<void> => {
+  test('expands a glob in pattern', (): Promise<void> => {
     return runList([], {pattern: 'gulp*'}, 'glob-arg', (config, reporter): ?Promise<void> => {
       const rprtr = new BufferReporter({});
       const tree = reporter.getBuffer().slice(-1);

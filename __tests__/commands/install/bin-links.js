@@ -2,7 +2,7 @@
 
 import * as fs from '../../../src/util/fs.js';
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 150000;
+jest.setTimeout(150000);
 
 const request = require('request');
 const path = require('path');

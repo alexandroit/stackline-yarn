@@ -13,7 +13,7 @@ import * as fs from '../../../src/util/fs.js';
 import * as misc from '../../../src/util/misc.js';
 import {getPackageVersion, explodeLockfile, runInstall, runLink, createLockfile, run as buildRun} from '../_helpers.js';
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 150000;
+jest.setTimeout(150000);
 
 let request = require('request');
 const path = require('path');
@@ -34,7 +34,7 @@ async function mockConstants(base: Config, mocks: Object, cb: (config: Config) =
   opts.production = base.production;
   opts.cacheFolder = base._cacheRootFolder;
 
-  const automock = jest.genMockFromModule('../../../src/constants');
+  const automock = jest.createMockFromModule('../../../src/constants');
   jest.setMock('../../../src/constants', Object.assign(automock, mocks));
 
   jest.resetModules();
@@ -45,8 +45,8 @@ async function mockConstants(base: Config, mocks: Object, cb: (config: Config) =
   jest.unmock('../../../src/constants');
 }
 
-beforeEach(request.__resetAuthedRequests);
-afterEach(request.__resetAuthedRequests);
+beforeEach(() => request.__resetAuthedRequests());
+afterEach(() => request.__resetAuthedRequests());
 
 test('install should not copy the .bin folders from the cache', () =>
   runInstall({}, 'install-no-bin', async config => {
@@ -810,7 +810,7 @@ test('install should fail with unsupported algorithms', () =>
     message: expect.stringContaining('none of the specified algorithms are supported'),
   }));
 
-test.concurrent('install should update integrity in yarn.lock (--update-checksums)', () =>
+test('install should update integrity in yarn.lock (--update-checksums)', () =>
   runInstall({updateChecksums: true}, 'install-update-checksums', async config => {
     const lockFileLines = explodeLockfile(await fs.readFile(path.join(config.cwd, 'yarn.lock')));
     expect(lockFileLines[3]).toEqual(
@@ -821,7 +821,7 @@ test.concurrent('install should update integrity in yarn.lock (--update-checksum
   }),
 );
 
-test.concurrent('install should update malformed integrity string in yarn.lock (--update-checksums)', () =>
+test('install should update malformed integrity string in yarn.lock (--update-checksums)', () =>
   runInstall({updateChecksums: true}, 'install-update-checksums-malformed', async config => {
     const lockFileLines = explodeLockfile(await fs.readFile(path.join(config.cwd, 'yarn.lock')));
     expect(lockFileLines[3]).toEqual(

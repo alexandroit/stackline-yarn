@@ -1,0 +1,6 @@
+const fs=require('node:fs'),os=require('node:os'),path=require('node:path'),assert=require('node:assert/strict');
+const tar=require('tar-stream'),tarfs=require('tar-fs');
+const root=fs.mkdtempSync(path.join(os.tmpdir(),'stackline-yarn-bundle-audit-'));const out=path.join(root,'extract'),outside=path.join(root,'outside');fs.mkdirSync(out);fs.mkdirSync(outside);const sentinel=path.join(outside,'sentinel');fs.writeFileSync(sentinel,'original');
+const pack=tar.pack(),extract=tarfs.extract(out,{chown:false});let failure=null;extract.on('error',e=>{failure=e.message;finish()});extract.on('finish',finish);pack.pipe(extract);
+pack.entry({name:'link',type:'symlink',linkname:'../outside'},()=>pack.entry({name:'hard',type:'link',linkname:'link/sentinel'},()=>pack.entry({name:'hard',type:'file'},'changed only inside the isolated audit fixture',()=>pack.finalize())));
+let done=false;function finish(){if(done)return;done=true;const value=fs.readFileSync(sentinel,'utf8');assert(failure, 'malicious links must be rejected');assert.equal(value,'original','archive escaped its extraction directory');console.log('Patched tar-fs rejects symlink/hardlink archive escape in isolated fixture.');fs.rmSync(root,{recursive:true,force:true});}

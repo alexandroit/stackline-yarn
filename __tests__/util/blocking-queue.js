@@ -3,7 +3,7 @@
 import BlockingQueue from '../../src/util/blocking-queue.js';
 
 test('max concurrency', async function(): Promise<void> {
-  jest.useFakeTimers();
+  jest.useFakeTimers({legacyFakeTimers: true});
 
   const queue = new BlockingQueue('test', 5);
   let i = 0;

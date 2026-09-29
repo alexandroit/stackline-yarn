@@ -22,9 +22,9 @@ beforeEach(() => {
   );
 });
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 150000;
+jest.setTimeout(150000);
 
-test.concurrent(
+test(
   'install with offline mirror and pack-built-packages setting should run install' +
     ' scripts on first call and not run on second while producing the same node_modules',
   (): Promise<void> => {
@@ -54,7 +54,7 @@ test.concurrent(
   },
 );
 
-test.concurrent(
+test(
   'install with offline mirror and pack-built-packages setting should not ignore ".npmignore"',
   (): Promise<void> => {
     return runInstall({ignoreScripts: true}, 'install-offline-built-artifacts-no-ignores', async (config, reporter) => {
@@ -85,7 +85,7 @@ test.concurrent(
   },
 );
 
-test.concurrent('install without pack-built-packages should keep running install scripts', (): Promise<void> => {
+test('install without pack-built-packages should keep running install scripts', (): Promise<void> => {
   return runInstall({ignoreScripts: true}, 'install-offline-built-artifacts', async (config, reporter) => {
     // install scripts were not run
     expect(await fs.exists(path.join(config.cwd, 'node_modules', 'dep-a', 'module-a-build.log'))).toEqual(false);
@@ -109,7 +109,7 @@ test.concurrent('install without pack-built-packages should keep running install
   });
 });
 
-test.concurrent('removing prebuilt package .tgz file falls back to running scripts', (): Promise<void> => {
+test('removing prebuilt package .tgz file falls back to running scripts', (): Promise<void> => {
   return runInstall({ignoreScripts: true}, 'install-offline-built-artifacts', async (config, reporter) => {
     // install scripts were not run
     expect(await fs.exists(path.join(config.cwd, 'node_modules', 'dep-a', 'module-a-build.log'))).toEqual(false);
@@ -204,7 +204,7 @@ test('creates the file in the mirror when fetching a git repository', async () =
   });
 });
 
-test.concurrent('install from offline mirror', (): Promise<void> => {
+test('install from offline mirror', (): Promise<void> => {
   return runInstall({}, 'install-from-offline-mirror', async (config): Promise<void> => {
     const allFiles = await fs.walk(config.cwd);
 
@@ -222,7 +222,7 @@ test.concurrent('install from offline mirror', (): Promise<void> => {
   });
 });
 
-test.concurrent('install should add missing deps to yarn and mirror (PR import scenario)', (): Promise<void> => {
+test('install should add missing deps to yarn and mirror (PR import scenario)', (): Promise<void> => {
   return runInstall({}, 'install-import-pr', async config => {
     expect(await getPackageVersion(config, 'mime-types')).toEqual('2.0.0');
     expect(semver.satisfies(await getPackageVersion(config, 'mime-db'), '~1.0.1')).toEqual(true);
@@ -242,7 +242,7 @@ test.concurrent('install should add missing deps to yarn and mirror (PR import s
   });
 });
 
-test.concurrent('install should update a dependency to yarn and mirror (PR import scenario 2)', (): Promise<void> => {
+test('install should update a dependency to yarn and mirror (PR import scenario 2)', (): Promise<void> => {
   // mime-types@2.0.0 is gets updated to mime-types@2.1.11 via
   // a change in package.json,
   // files in mirror, yarn.lock, package.json and node_modules should reflect that
@@ -283,7 +283,7 @@ test.concurrent('install should update a dependency to yarn and mirror (PR impor
   });
 });
 
-test.concurrent('offline mirror can be enabled from parent dir', (): Promise<void> => {
+test('offline mirror can be enabled from parent dir', (): Promise<void> => {
   const fixture = {
     source: 'offline-mirror-configuration',
     cwd: 'enabled-from-parent',
@@ -298,7 +298,7 @@ test.concurrent('offline mirror can be enabled from parent dir', (): Promise<voi
   });
 });
 
-test.concurrent('offline mirror can be enabled from parent dir, with merging of own .yarnrc', (): Promise<void> => {
+test('offline mirror can be enabled from parent dir, with merging of own .yarnrc', (): Promise<void> => {
   const fixture = {
     source: 'offline-mirror-configuration',
     cwd: 'enabled-from-parent-merge',
@@ -313,7 +313,7 @@ test.concurrent('offline mirror can be enabled from parent dir, with merging of 
   });
 });
 
-test.concurrent('offline mirror can be disabled locally', (): Promise<void> => {
+test('offline mirror can be disabled locally', (): Promise<void> => {
   const fixture = {
     source: 'offline-mirror-configuration',
     cwd: 'disabled-locally',
@@ -328,7 +328,7 @@ test.concurrent('offline mirror can be disabled locally', (): Promise<void> => {
   });
 });
 
-test.concurrent('prunes the offline mirror tarballs after pruning is enabled', (): Promise<void> => {
+test('prunes the offline mirror tarballs after pruning is enabled', (): Promise<void> => {
   return runInstall({}, 'prune-offline-mirror', async (config): Promise<void> => {
     const mirrorPath = 'mirror-for-offline';
     // Scenario:
@@ -342,7 +342,7 @@ test.concurrent('prunes the offline mirror tarballs after pruning is enabled', (
   });
 });
 
-test.concurrent('scoped packages remain in offline mirror after pruning is enabled', (): Promise<void> => {
+test('scoped packages remain in offline mirror after pruning is enabled', (): Promise<void> => {
   return runInstall({}, 'prune-offline-mirror-scoped', async (config): Promise<void> => {
     const mirrorPath = 'mirror-for-offline';
     // scoped package exists

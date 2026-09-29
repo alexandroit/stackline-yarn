@@ -7,7 +7,7 @@ import * as fs from '../../src/util/fs.js';
 
 const path = require('path');
 
-test.concurrent('creates folder in linkFolder', async (): Promise<void> => {
+test('creates folder in linkFolder', async (): Promise<void> => {
   const linkFolder = await mkdir('link-folder');
   await runLink([], {linkFolder}, 'package-with-name', async (config, reporter): Promise<void> => {
     const existed = await fs.exists(path.join(linkFolder, 'a-package'));
@@ -15,7 +15,7 @@ test.concurrent('creates folder in linkFolder', async (): Promise<void> => {
   });
 });
 
-test.concurrent('throws error if package.json does not have name', async (): Promise<void> => {
+test('throws error if package.json does not have name', async (): Promise<void> => {
   const linkFolder = await mkdir('link-folder');
   const reporter = new ConsoleReporter({});
 
@@ -26,7 +26,7 @@ test.concurrent('throws error if package.json does not have name', async (): Pro
   }
 });
 
-test.concurrent('creates cmd file on Windows', async (): Promise<void> => {
+test('creates cmd file on Windows', async (): Promise<void> => {
   const linkFolder = await mkdir('link-folder');
   const prefix = await mkdir('prefix-folder');
 

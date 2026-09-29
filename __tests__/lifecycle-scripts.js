@@ -12,7 +12,7 @@ const exec = require('child_process').exec;
 const fixturesLoc = path.join(__dirname, './fixtures/lifecycle-scripts');
 const yarnBin = path.join(__dirname, '../bin/yarn.js');
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
+jest.setTimeout(60000);
 
 if (!existsSync(path.resolve(__dirname, '../lib'))) {
   throw new Error('These tests require `yarn build` to have been run first.');
@@ -46,12 +46,12 @@ async function execCommand(cmd: string, packageName: string, env = process.env):
   });
 }
 
-test.concurrent('should add the global yarnrc arguments to the command line', async () => {
+test('should add the global yarnrc arguments to the command line', async () => {
   const stdout = await execCommand('cache dir', 'yarnrc-cli');
   expect(stdout.replace(/\\/g, '/')).toMatch(/^(C:)?\/tmp\/foobar\/v[0-9]+(\/.*)?\n$/);
 });
 
-test.concurrent(
+test(
   'should add the command-specific yarnrc arguments to the command line if the command name matches',
   async () => {
     const stdout = await execCommand('cache dir', 'yarnrc-cli-command-specific-ok');
@@ -59,23 +59,23 @@ test.concurrent(
   },
 );
 
-test.concurrent("should not add the command-specific yarnrc arguments if the command name doesn't match", async () => {
+test("should not add the command-specific yarnrc arguments if the command name doesn't match", async () => {
   const stdout = await execCommand('cache dir', 'yarnrc-cli-command-specific-ko');
   expect(stdout.replace(/\\/g, '/')).not.toMatch(/^(C:)?\/tmp\/foobar\/v[0-9]+(\/.*)?\n$/);
 });
 
-test.concurrent('should allow overriding the yarnrc values from the command line', async () => {
+test('should allow overriding the yarnrc values from the command line', async () => {
   const stdout = await execCommand('cache dir --cache-folder /tmp/toto', 'yarnrc-cli');
   expect(stdout.replace(/\\/g, '/')).toMatch(/^(C:)?\/tmp\/toto\/v[0-9]+(\/.*)?\n$/);
 });
 
 // Test disabled for now, cf rc.js
-test.concurrent('should resolve the yarnrc values relative to where the file lives', async () => {
+test('should resolve the yarnrc values relative to where the file lives', async () => {
   const stdout = await execCommand('cache dir', 'yarnrc-cli-relative');
   expect(stdout.replace(/\\/g, '/')).toMatch(/^(C:)?(\/[^\/]+)+\/foobar\/hello\/world\/v[0-9]+(\/.*)?\n$/);
 });
 
-test.concurrent(
+test(
   'should expose `npm_config_argv` env variable to lifecycle scripts for back compatibility with npm',
   async () => {
     const env = Object.assign({}, process.env);
@@ -95,20 +95,20 @@ test.concurrent(
   },
 );
 
-test.concurrent('should not run pre/post hooks for .bin executables', async () => {
+test('should not run pre/post hooks for .bin executables', async () => {
   const stdout = await execCommand('run lol', 'script_only_pre_post');
   expect(stdout).toContain('lol');
   expect(stdout).not.toContain('##prelol##');
   expect(stdout).not.toContain('##postlol##');
 });
 
-test.concurrent('should not run pre/post hooks if they are .bin executables and not scripts', async () => {
+test('should not run pre/post hooks if they are .bin executables and not scripts', async () => {
   const stdout = await execCommand('run lol', 'bin_pre_post');
   expect(stdout).toContain('lol');
   expect(stdout).not.toContain('##prelol##');
 });
 
-test.concurrent('should only expose non-internal configs', async () => {
+test('should only expose non-internal configs', async () => {
   const env = Object.assign({}, process.env);
   const internalConfigKeys = ['lastUpdateCheck'];
   const nonInternalConfigKeys = ['user_agent'];
@@ -135,7 +135,7 @@ test.concurrent('should only expose non-internal configs', async () => {
   });
 });
 
-test.concurrent('should run both prepublish and prepare when installing, but not prepublishOnly', async () => {
+test('should run both prepublish and prepare when installing, but not prepublishOnly', async () => {
   const stdout = await execCommand('install', 'lifecycle-scripts');
 
   expect(stdout).toMatch(/^running the prepublish hook$/m);
@@ -144,19 +144,19 @@ test.concurrent('should run both prepublish and prepare when installing, but not
   expect(stdout).not.toMatch(/^running the prepublishOnly hook$/m);
 });
 
-test.concurrent('should run both prepack and postpack', async () => {
+test('should run both prepack and postpack', async () => {
   const stdout = await execCommand('pack', 'lifecycle-scripts');
 
   expect(stdout).toMatch(/^running the prepack hook$/m);
   expect(stdout).toMatch(/^running the postpack hook$/m);
 });
 
-test.concurrent('should allow setting environment variables via yarnrc', async () => {
+test('should allow setting environment variables via yarnrc', async () => {
   const stdout = await execCommand('install', 'yarnrc-env');
   expect(stdout).toMatch(/^BAR$/m);
 });
 
-test.concurrent('should inherit existing environment variables when setting via yarnrc', async () => {
+test('should inherit existing environment variables when setting via yarnrc', async () => {
   const srcPackageDir = path.join(fixturesLoc, 'yarnrc-env');
   const packageDir = await makeTemp('yarnrc-env-nested');
 

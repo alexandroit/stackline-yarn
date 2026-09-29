@@ -1,6 +1,6 @@
 /* @flow */
 
-const realInquirer = (require: any).requireActual('inquirer');
+const realInquirer = jest.requireActual('inquirer');
 
 realInquirer.prompt = jest.fn(questions => {
   const chosenVersion = questions[0].choices[0];

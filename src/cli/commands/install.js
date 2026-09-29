@@ -983,7 +983,11 @@ export class Install {
       }
       const manifest = this.lockfile.getLocked(pattern);
       if (manifest && manifest.integrity) {
-        const manifestIntegrity = ssri.stringify(manifest.integrity);
+        const parsedIntegrity = ssri.parse(manifest.integrity);
+        // ssri 12 rejects malformed values instead of stringifying them.
+        // Return false so --update-checksums can replace the invalid lock entry.
+        if (!parsedIntegrity) return false;
+        const manifestIntegrity = ssri.stringify(parsedIntegrity);
         return manifestIntegrity === existingIntegrityInfo;
       }
       return false;

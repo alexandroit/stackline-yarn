@@ -21,7 +21,7 @@ import Git from '../../src/util/git.js';
 import {spawn as spawnGit} from '../../src/util/git/git-spawn.js';
 import {NoopReporter, BufferReporter} from '../../src/reporters/index.js';
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 90000;
+jest.setTimeout(90000);
 
 test('npmUrlToGitUrl', () => {
   expect(Git.npmUrlToGitUrl('git+https://github.com/npm-opam/ocamlfind.git')).toEqual({

@@ -11,7 +11,7 @@ import * as fs from '../src/util/fs.js';
 const nativeFs = require('fs');
 const path = require('path');
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
+jest.setTimeout(60000);
 
 const fixturesLoc = path.join(__dirname, 'fixtures', 'normalize-manifest');
 

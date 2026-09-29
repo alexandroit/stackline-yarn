@@ -6,7 +6,7 @@ import {run as upgrade} from '../../src/cli/commands/upgrade.js';
 import * as fs from '../../src/util/fs.js';
 import * as reporters from '../../src/reporters/index.js';
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 90000;
+jest.setTimeout(90000);
 
 const path = require('path');
 
@@ -55,7 +55,7 @@ expect.extend({
   },
 });
 
-test.concurrent('throws if lockfile is out of date', (): Promise<void> => {
+test('throws if lockfile is out of date', (): Promise<void> => {
   const reporter = new reporters.ConsoleReporter({});
 
   return new Promise(async resolve => {
@@ -69,13 +69,13 @@ test.concurrent('throws if lockfile is out of date', (): Promise<void> => {
   });
 });
 
-test.concurrent('works with no arguments', (): Promise<void> => {
+test('works with no arguments', (): Promise<void> => {
   return runUpgrade([], {}, 'no-args', async (config): ?Promise<void> => {
     await expectInstalledDependency(config, 'left-pad', '^1.0.0', '1.1.3');
   });
 });
 
-test.concurrent('upgrades transitive deps when no arguments', (): Promise<void> => {
+test('upgrades transitive deps when no arguments', (): Promise<void> => {
   return runUpgrade([], {}, 'with-subdep', async (config): ?Promise<void> => {
     await expectInstalledDependency(config, 'strip-ansi', '^2.0.1', '2.0.1');
     await expectInstalledTransitiveDependency(config, 'ansi-regex', '^1.0.0', '1.1.1');
@@ -84,7 +84,7 @@ test.concurrent('upgrades transitive deps when no arguments', (): Promise<void> 
   });
 });
 
-test.concurrent('does not upgrade transitive deps that are also a direct dependency', (): Promise<void> => {
+test('does not upgrade transitive deps that are also a direct dependency', (): Promise<void> => {
   return runUpgrade(['strip-ansi'], {}, 'with-subdep-also-direct', async (config): ?Promise<void> => {
     await expectInstalledDependency(config, 'strip-ansi', '^2.0.1', '2.0.1');
     await expectInstalledTransitiveDependency(config, 'ansi-regex', '^1.0.0', '1.0.0');
@@ -92,7 +92,7 @@ test.concurrent('does not upgrade transitive deps that are also a direct depende
   });
 });
 
-test.concurrent('does not upgrade transitive deps when specific package upgraded', (): Promise<void> => {
+test('does not upgrade transitive deps when specific package upgraded', (): Promise<void> => {
   return runUpgrade(['strip-ansi'], {}, 'with-subdep', async (config): ?Promise<void> => {
     await expectInstalledDependency(config, 'strip-ansi', '^2.0.1', '2.0.1');
     await expectInstalledTransitiveDependency(config, 'ansi-regex', '^1.0.0', '1.1.1');
@@ -101,14 +101,14 @@ test.concurrent('does not upgrade transitive deps when specific package upgraded
   });
 });
 
-test.concurrent('works with single argument', (): Promise<void> => {
+test('works with single argument', (): Promise<void> => {
   return runUpgrade(['max-safe-integer'], {}, 'single-package', async (config): ?Promise<void> => {
     await expectInstalledDependency(config, 'left-pad', '^1.0.0', '1.0.0');
     await expectInstalledDependency(config, 'max-safe-integer', '^1.0.0', '1.0.1');
   });
 });
 
-test.concurrent('works with multiple arguments', (): Promise<void> => {
+test('works with multiple arguments', (): Promise<void> => {
   return runUpgrade(['left-pad', 'max-safe-integer'], {}, 'multiple-packages', async (config): ?Promise<void> => {
     await expectInstalledDependency(config, 'left-pad', '^1.0.0', '1.1.3');
     await expectInstalledDependency(config, 'max-safe-integer', '^1.0.0', '1.0.1');
@@ -116,14 +116,14 @@ test.concurrent('works with multiple arguments', (): Promise<void> => {
   });
 });
 
-test.concurrent('respects dependency type', (): Promise<void> => {
+test('respects dependency type', (): Promise<void> => {
   return runUpgrade(['left-pad@^1.1.3'], {}, 'respects-dependency-type', async (config): ?Promise<void> => {
     await expectInstalledDevDependency(config, 'left-pad', '^1.1.3', '1.1.3');
     await expectInstalledDependency(config, 'max-safe-integer', '^1.0.0', '1.0.0');
   });
 });
 
-test.concurrent('respects --ignore-engines flag', (): Promise<void> => {
+test('respects --ignore-engines flag', (): Promise<void> => {
   return runUpgrade(['hawk@4.1'], {ignoreEngines: true}, 'respects-ignore-engines-flag', async (config): ?Promise<
     void,
   > => {
@@ -131,13 +131,13 @@ test.concurrent('respects --ignore-engines flag', (): Promise<void> => {
   });
 });
 
-test.concurrent('upgrades from fixed version to latest', (): Promise<void> => {
+test('upgrades from fixed version to latest', (): Promise<void> => {
   return runUpgrade(['max-safe-integer'], {latest: true}, 'fixed-to-latest', async (config): ?Promise<void> => {
     await expectInstalledDependency(config, 'max-safe-integer', '1.0.1', '1.0.1');
   });
 });
 
-test.concurrent('upgrades from fixed version to latest with workspaces', (): Promise<void> => {
+test('upgrades from fixed version to latest with workspaces', (): Promise<void> => {
   return runUpgrade(['max-safe-integer'], {latest: true}, 'fixed-to-latest-workspaces', async (config): ?Promise<
     void,
   > => {
@@ -145,7 +145,7 @@ test.concurrent('upgrades from fixed version to latest with workspaces', (): Pro
   });
 });
 
-test.concurrent('works with just a pattern', (): Promise<void> => {
+test('works with just a pattern', (): Promise<void> => {
   return runUpgrade([], {pattern: 'max'}, 'multiple-packages', async (config): ?Promise<void> => {
     await expectInstalledDependency(config, 'left-pad', '^1.0.0', '1.0.0');
     await expectInstalledDependency(config, 'max-safe-integer', '^1.0.0', '1.0.1');
@@ -153,7 +153,7 @@ test.concurrent('works with just a pattern', (): Promise<void> => {
   });
 });
 
-test.concurrent('works with arguments and a pattern', (): Promise<void> => {
+test('works with arguments and a pattern', (): Promise<void> => {
   return runUpgrade(['left-pad'], {pattern: 'max'}, 'multiple-packages', async (config): ?Promise<void> => {
     await expectInstalledDependency(config, 'left-pad', '^1.0.0', '1.1.3');
     await expectInstalledDependency(config, 'max-safe-integer', '^1.0.0', '1.0.1');
@@ -161,79 +161,79 @@ test.concurrent('works with arguments and a pattern', (): Promise<void> => {
   });
 });
 
-test.concurrent('upgrades to latest matching package.json semver when no package name passed', (): Promise<void> => {
+test('upgrades to latest matching package.json semver when no package name passed', (): Promise<void> => {
   return runUpgrade([], {}, 'range-to-latest', async (config): ?Promise<void> => {
     await expectInstalledDependency(config, 'left-pad', '<=1.1.1', '1.1.1');
   });
 });
 
-test.concurrent('--latest upgrades to latest ignoring package.json when no package name passed', (): Promise<void> => {
+test('--latest upgrades to latest ignoring package.json when no package name passed', (): Promise<void> => {
   return runUpgrade([], {latest: true}, 'range-to-latest', async (config): ?Promise<void> => {
     await expectInstalledDependency(config, 'left-pad', '<=1.1.3', '1.1.3');
   });
 });
 
-test.concurrent('--latest preserves "<=" semver range', (): Promise<void> => {
+test('--latest preserves "<=" semver range', (): Promise<void> => {
   return runUpgrade([], {latest: true}, 'range-to-latest', async (config): ?Promise<void> => {
     await expectInstalledDependency(config, 'left-pad', '<=1.1.3', '1.1.3');
   });
 });
 
-test.concurrent('--latest preserves "^" semver range', (): Promise<void> => {
+test('--latest preserves "^" semver range', (): Promise<void> => {
   return runUpgrade([], {latest: true}, 'caret-range-to-latest', async (config): ?Promise<void> => {
     await expectInstalledDependency(config, 'left-pad', '^1.1.3', '1.1.3');
   });
 });
 
-test.concurrent('--latest preserves "~" semver range', (): Promise<void> => {
+test('--latest preserves "~" semver range', (): Promise<void> => {
   return runUpgrade([], {latest: true}, 'tilde-range-to-latest', async (config): ?Promise<void> => {
     await expectInstalledDependency(config, 'left-pad', '~1.1.3', '1.1.3');
   });
 });
 
-test.concurrent('--latest defaults to "^" semver range if existing range is complex', (): Promise<void> => {
+test('--latest defaults to "^" semver range if existing range is complex', (): Promise<void> => {
   return runUpgrade([], {latest: true}, 'complex-range-to-latest', async (config): ?Promise<void> => {
     await expectInstalledDependency(config, 'left-pad', '^1.1.3', '1.1.3');
   });
 });
 
-test.concurrent('sets new version range to caret when --caret and --latest are passed', (): Promise<void> => {
+test('sets new version range to caret when --caret and --latest are passed', (): Promise<void> => {
   return runUpgrade([], {latest: true, caret: true}, 'range-to-latest', async (config): ?Promise<void> => {
     await expectInstalledDependency(config, 'left-pad', '^1.1.3', '1.1.3');
   });
 });
 
-test.concurrent('sets new version range to tilde when --tilde and --latest are passed', (): Promise<void> => {
+test('sets new version range to tilde when --tilde and --latest are passed', (): Promise<void> => {
   return runUpgrade([], {latest: true, tilde: true}, 'range-to-latest', async (config): ?Promise<void> => {
     await expectInstalledDependency(config, 'left-pad', '~1.1.3', '1.1.3');
   });
 });
 
-test.concurrent('sets new version range to exact when --exact and --latest are passed', (): Promise<void> => {
+test('sets new version range to exact when --exact and --latest are passed', (): Promise<void> => {
   return runUpgrade([], {latest: true, exact: true}, 'range-to-latest', async (config): ?Promise<void> => {
     await expectInstalledDependency(config, 'left-pad', '1.1.3', '1.1.3');
   });
 });
 
-test.concurrent('upgrades to latest matching semver when package name passed with version', (): Promise<void> => {
+test('upgrades to latest matching semver when package name passed with version', (): Promise<void> => {
   return runUpgrade(['left-pad@~1.1.2'], {}, 'range-to-latest', async (config): ?Promise<void> => {
     await expectInstalledDependency(config, 'left-pad', '~1.1.2', '1.1.3');
   });
 });
 
-test.concurrent('--latest upgrades to passed in version when package name passed with version', (): Promise<void> => {
+test('--latest upgrades to passed in version when package name passed with version', (): Promise<void> => {
   return runUpgrade(['left-pad@1.1.2'], {latest: true}, 'range-to-latest', async (config): ?Promise<void> => {
     await expectInstalledDependency(config, 'left-pad', '1.1.2', '1.1.2');
   });
 });
 
-test.concurrent('upgrades to latest matching package.json semver when package name passed', (): Promise<void> => {
+test('upgrades to latest matching package.json semver when package name passed', (): Promise<void> => {
   return runUpgrade(['left-pad'], {}, 'range-to-latest', async (config): ?Promise<void> => {
     await expectInstalledDependency(config, 'left-pad', '<=1.1.1', '1.1.1');
   });
 });
 
-test.concurrent('upgrades dependency packages not in registry', (): Promise<void> => {
+test('upgrades dependency packages not in registry', (): Promise<void> => {
   const packages = ['yarn-test-git-repo', 'e2e-test-repo'];
   return runUpgrade(packages, {}, 'package-not-in-registry', async (config): ?Promise<void> => {
     const lockfile = explodeLockfile(await fs.readFile(path.join(config.cwd, 'yarn.lock')));
@@ -248,7 +248,7 @@ test.concurrent('upgrades dependency packages not in registry', (): Promise<void
   });
 });
 
-test.concurrent('upgrades scoped packages not in registry', (): Promise<void> => {
+test('upgrades scoped packages not in registry', (): Promise<void> => {
   return runUpgrade([], {scope: '@yarn/'}, 'package-not-in-registry-scoped', async (config): ?Promise<void> => {
     const lockfile = explodeLockfile(await fs.readFile(path.join(config.cwd, 'yarn.lock')));
     const gitRemote = 'https://github.com/yarnpkg/e2e-test-repo';
@@ -260,7 +260,7 @@ test.concurrent('upgrades scoped packages not in registry', (): Promise<void> =>
   });
 });
 
-test.concurrent('upgrades dev dependency packages not in registry', (): Promise<void> => {
+test('upgrades dev dependency packages not in registry', (): Promise<void> => {
   const packages = ['yarn-test-git-repo', 'e2e-test-repo'];
   return runUpgrade(packages, {}, 'package-not-in-registry-dev', async (config): ?Promise<void> => {
     const lockfile = explodeLockfile(await fs.readFile(path.join(config.cwd, 'yarn.lock')));
@@ -275,7 +275,7 @@ test.concurrent('upgrades dev dependency packages not in registry', (): Promise<
   });
 });
 
-test.concurrent('upgrades optional dependency packages not in registry', (): Promise<void> => {
+test('upgrades optional dependency packages not in registry', (): Promise<void> => {
   const packages = ['yarn-test-git-repo', 'e2e-test-repo'];
   return runUpgrade(packages, {}, 'package-not-in-registry-optional', async (config): ?Promise<void> => {
     const lockfile = explodeLockfile(await fs.readFile(path.join(config.cwd, 'yarn.lock')));
@@ -290,7 +290,7 @@ test.concurrent('upgrades optional dependency packages not in registry', (): Pro
   });
 });
 
-test.concurrent('informs the type of dependency after upgrade', (): Promise<void> => {
+test('informs the type of dependency after upgrade', (): Promise<void> => {
   return buildRun(
     reporters.BufferReporter,
     fixturesLoc,
@@ -319,7 +319,7 @@ test.concurrent('informs the type of dependency after upgrade', (): Promise<void
   );
 });
 
-test.concurrent('warns when peer dependency is not met after upgrade', (): Promise<void> => {
+test('warns when peer dependency is not met after upgrade', (): Promise<void> => {
   return buildRun(
     reporters.BufferReporter,
     fixturesLoc,
@@ -343,7 +343,7 @@ test.concurrent('warns when peer dependency is not met after upgrade', (): Promi
   );
 });
 
-test.concurrent("doesn't warn when peer dependency is still met after upgrade", (): Promise<void> => {
+test("doesn't warn when peer dependency is still met after upgrade", (): Promise<void> => {
   return buildRun(
     reporters.BufferReporter,
     fixturesLoc,
@@ -368,7 +368,7 @@ test.concurrent("doesn't warn when peer dependency is still met after upgrade", 
 });
 
 // Regression test for #4840
-test.concurrent("doesn't warn when upgrading a devDependency", (): Promise<void> => {
+test("doesn't warn when upgrading a devDependency", (): Promise<void> => {
   return buildRun(
     reporters.BufferReporter,
     fixturesLoc,
@@ -392,7 +392,7 @@ test.concurrent("doesn't warn when upgrading a devDependency", (): Promise<void>
   );
 });
 
-test.concurrent('can prune the offline mirror', (): Promise<void> => {
+test('can prune the offline mirror', (): Promise<void> => {
   return runUpgrade(['left-pad@1.1.2'], {}, 'prune-offline-mirror', async (config): ?Promise<void> => {
     await expectInstalledDependency(config, 'left-pad', '1.1.2', '1.1.2');
 
@@ -402,7 +402,7 @@ test.concurrent('can prune the offline mirror', (): Promise<void> => {
   });
 });
 
-test.concurrent('respects --scope flag', (): Promise<void> => {
+test('respects --scope flag', (): Promise<void> => {
   return runUpgrade([], {scope: '@angular', latest: true}, 'respects-scope-flag', async (config): ?Promise<void> => {
     const lockfile = explodeLockfile(await fs.readFile(path.join(config.cwd, 'yarn.lock')));
     const pkg = await fs.readJson(path.join(config.cwd, 'package.json'));
@@ -417,7 +417,7 @@ test.concurrent('respects --scope flag', (): Promise<void> => {
   });
 });
 
-test.concurrent('respects --scope flag with caret', (): Promise<void> => {
+test('respects --scope flag with caret', (): Promise<void> => {
   return runUpgrade([], {scope: '@angular'}, 'respects-scope-flag-with-caret', async (config): ?Promise<void> => {
     await expectInstalledDependency(config, '@angular-mdl/core', '^4.0.0', '4.0.0');
     await expectInstalledDependency(config, '@angular/core', '^2.4.9', '2.4.10');
@@ -425,7 +425,7 @@ test.concurrent('respects --scope flag with caret', (): Promise<void> => {
   });
 });
 
-test.concurrent('--latest works if there is an install script on a hoisted dependency', (): Promise<void> => {
+test('--latest works if there is an install script on a hoisted dependency', (): Promise<void> => {
   return buildRun(
     reporters.BufferReporter,
     fixturesLoc,
@@ -445,7 +445,7 @@ test.concurrent('--latest works if there is an install script on a hoisted depen
   );
 });
 
-test.concurrent('upgrade to workspace root preserves child dependencies', (): Promise<void> => {
+test('upgrade to workspace root preserves child dependencies', (): Promise<void> => {
   return runUpgrade(['max-safe-integer@1.0.1'], {latest: true}, 'workspaces', async (config): ?Promise<void> => {
     const lockfile = explodeLockfile(await fs.readFile(path.join(config.cwd, 'yarn.lock')));
 
@@ -466,7 +466,7 @@ test.concurrent('upgrade to workspace root preserves child dependencies', (): Pr
   });
 });
 
-test.concurrent('upgrade to workspace child preserves root dependencies', (): Promise<void> => {
+test('upgrade to workspace child preserves root dependencies', (): Promise<void> => {
   const fixture = {source: 'workspaces', cwd: 'child-a'};
   return runUpgrade(['left-pad@1.1.0'], {latest: true}, fixture, async (config): ?Promise<void> => {
     const lockfile = explodeLockfile(await fs.readFile(path.join(config.lockfileFolder, 'yarn.lock')));
@@ -488,7 +488,7 @@ test.concurrent('upgrade to workspace child preserves root dependencies', (): Pr
   });
 });
 
-test.concurrent('latest flag does not downgrade from a beta', (): Promise<void> => {
+test('latest flag does not downgrade from a beta', (): Promise<void> => {
   return runUpgrade([], {latest: true}, 'using-beta', async (config): ?Promise<void> => {
     await expectInstalledDependency(config, 'react-refetch', '^1.0.3-0', '1.0.3-0');
   });
