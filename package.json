@@ -1,10 +1,10 @@
 {
   "name": "@stackline/yarn",
   "installationMethod": "unknown",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "BSD-2-Clause",
   "preferGlobal": true,
-  "description": "\ud83d\udce6\ud83d\udc08 Fast, reliable, and secure dependency management.",
+  "description": "📦🐈 Fast, reliable, and secure dependency management.",
   "dependencies": {
     "@zkochan/cmd-shim": "^3.1.0",
     "bytes": "^3.0.0",
@@ -115,7 +115,7 @@
       "printBasicPrototype": true
     }
   },
-  "homepage": "https://github.com/alexandroit/stackline-yarn#readme",
+  "homepage": "https://alexandro.net/docs/vanilla/yarn/",
   "bugs": {
     "url": "https://github.com/alexandroit/stackline-yarn/issues"
   },
@@ -134,5 +134,11 @@
     "UPSTREAM.md",
     "CHANGELOG.md",
     "SECURITY.md"
+  ],
+  "keywords": [
+    "stackline",
+    "npm-package",
+    "yarn",
+    "nodejs"
   ]
 }
