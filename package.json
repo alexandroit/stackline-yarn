@@ -1,7 +1,7 @@
 {
   "name": "@stackline/yarn",
   "installationMethod": "unknown",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "license": "BSD-2-Clause",
   "preferGlobal": true,
   "description": "📦🐈 Fast, reliable, and secure dependency management.",
