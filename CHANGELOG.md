@@ -2,6 +2,8 @@
 
 ## 1.0.3
 
+- Replace Jest configuration's vulnerable deepmerge with @stackline/deepmerge 1.1.0 through a parent-scoped override; verify real mergeConfig compatibility and prototype-poisoning protection.
+
 - Refresh locked dependencies and constrain affected modern glob/minimatch versions.
 - Use patched Node.js in CI and publication, and record raw audit findings separately from the reviewed registry-cache false positive.
 
