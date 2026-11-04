@@ -121,6 +121,10 @@ jobs:
           else
             test "$PACKAGE_EXISTS" = "true"
           fi
+      - name: Verify README version in the exact publish artifact
+        if: steps.registry.outputs.published != 'true'
+        run: python3 .github/scripts/check-release-readme.py artifact/*.tgz
+
       - name: Publish the exact CI tarball with OIDC and provenance
         if: steps.registry.outputs.published == 'false' && steps.registry.outputs.package_exists == 'true' && inputs.bootstrap == false
         run: npm publish ./artifact/*.tgz --access public --provenance --ignore-scripts

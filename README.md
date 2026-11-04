@@ -10,7 +10,7 @@
 
 **[Documentation](https://alexandro.net/docs/vanilla/yarn/)** | **[npm](https://www.npmjs.com/package/@stackline/yarn)** | **[Issues](https://github.com/alexandroit/stackline-yarn/issues)** | **[Repository](https://github.com/alexandroit/stackline-yarn)**
 
-**Current package version:** `1.0.2`
+**Current package version:** `1.0.4`
 
 ---
 
@@ -22,7 +22,7 @@
 
 | Item | Value |
 | :--- | :--- |
-| Package | `@stackline/yarn@1.0.2` |
+| Package | `@stackline/yarn@1.0.4` |
 | API target | `yarn@1.22.22` |
 | Supported Node.js | `>=20.19.0` |
 | License | `BSD-2-Clause` |
@@ -47,7 +47,7 @@ A maintained fork of Yarn Classic 1.22.22, rebuilt from its source history.
 Requires **Node.js >=20.19.0**. Published package version: **1.0.2**.
 
 ```sh
-npm install --global @stackline/yarn@1.0.2
+npm install --global @stackline/yarn@1.0.4
 yarn --version
 yarnpkg install --frozen-lockfile
 ```
@@ -55,7 +55,7 @@ yarnpkg install --frozen-lockfile
 For a project-local toolchain:
 
 ```sh
-npm install --save-dev yarn@npm:@stackline/yarn@1.0.2
+npm install --save-dev yarn@npm:@stackline/yarn@1.0.4
 npx yarn install
 ```
 
