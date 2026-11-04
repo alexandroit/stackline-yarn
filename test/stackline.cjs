@@ -4,7 +4,7 @@ const root=process.env.STACKLINE_TEST_PACKAGE||path.resolve(__dirname,'..');cons
 const run=(args,cwd,extra={})=>new Promise((resolve,reject)=>{const child=spawn(process.execPath,[cli,...args],{cwd,env:{...process.env,YARN_IGNORE_PATH:'1',...extra},stdio:['ignore','pipe','pipe']});let stdout='',stderr='';child.stdout.on('data',d=>stdout+=d);child.stderr.on('data',d=>stderr+=d);const timer=setTimeout(()=>{child.kill('SIGTERM');reject(new Error('CLI timed out: '+args.join(' ')));},45000);child.on('exit',code=>{clearTimeout(timer);if(code===0)resolve({stdout,stderr});else reject(new Error(JSON.stringify({args,code,stdout,stderr})));});});
 (async()=>{const temp=await fsp.mkdtemp(path.join(os.tmpdir(),'stackline-yarn-cli-'));let server;
 try{
- assert.equal(metadata.name,'@stackline/yarn');assert.equal(metadata.version,'1.0.0');assert.deepEqual(Object.keys(metadata.bin).sort(),['yarn','yarnpkg']);
+ assert.equal(metadata.name,'@stackline/yarn');assert.equal(metadata.version,require('../package.json').version);assert.deepEqual(Object.keys(metadata.bin).sort(),['yarn','yarnpkg']);
  assert.equal((await run(['--version'],temp)).stdout.trim(),metadata.version);
  const fixture=path.join(temp,'fixture'),consumer=path.join(temp,'consumer with spaces'),cache=path.join(temp,'cache');await fsp.mkdir(fixture);await fsp.mkdir(consumer);
  await fsp.writeFile(path.join(fixture,'package.json'),JSON.stringify({name:'stackline-yarn-fixture',version:'1.0.0',main:'index.js',bin:{'fixture-echo':'bin.js'}}));await fsp.writeFile(path.join(fixture,'index.js'),'module.exports = 42;\n');await fsp.writeFile(path.join(fixture,'bin.js'),'#!/usr/bin/env node\nconsole.log(process.argv.slice(2).join("|"));\n');

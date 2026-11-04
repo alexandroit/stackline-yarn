@@ -22,7 +22,8 @@ const notes = [
   `Publication: ${evidence.publicationRun}`,
   `CI: https://github.com/${process.env.GITHUB_REPOSITORY}/actions/runs/${process.env.CI_RUN_ID}`, '',
   'The published tarball is the exact artifact tested in CI. Registry bytes, provenance,',
-  'signatures, direct and aliased installs, and zero known production audit findings were verified.',
+  'signatures, direct and aliased installs, and no actionable known production advisories were verified.',
+  'Any excluded registry-cache alerts are recorded in registry-verification.json.',
   'Audit results are a point-in-time check, not a guarantee of absolute security.', '',
   'See the repository changelog and notices for the focused fixes and upstream attribution.', ''
 ].join('\n')

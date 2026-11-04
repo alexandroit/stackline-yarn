@@ -16,7 +16,7 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
         with:
-          node-version: 24.20.0
+          node-version: 24.22.2
           package-manager-cache: false
       - run: npm install --global npm@11.19.0
       - run: npm ci --ignore-scripts
@@ -26,7 +26,8 @@ jobs:
       - run: npm run test:security
       - run: npm run test:package
       - run: node --test scripts/registry-requests.test.mjs
-      - run: npm audit --audit-level=low
+      - run: node scripts/audit-reviewed.cjs --self-test
+      - run: npm run audit:security
       - run: git diff --exit-code
       - name: Pack tested source
         run: mkdir artifact && npm pack --ignore-scripts --pack-destination artifact
@@ -40,7 +41,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node: [20.19.0, 22.22.0]
+        node: [20.19.0, 22.23.4]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
@@ -58,4 +59,4 @@ jobs:
       - run: node test/stackline.cjs
         env:
           STACKLINE_TEST_PACKAGE: ${{ github.workspace }}/consumer/node_modules/@stackline/yarn
-      - run: npm --prefix consumer audit --omit=dev --audit-level=low
+      - run: cd consumer && node ../scripts/audit-reviewed.cjs

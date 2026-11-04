@@ -1,7 +1,7 @@
 {
   "name": "@stackline/yarn",
   "installationMethod": "unknown",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "license": "BSD-2-Clause",
   "preferGlobal": true,
   "description": "📦🐈 Fast, reliable, and secure dependency management.",
@@ -84,7 +84,8 @@
     "test:unit": "node scripts/run-tests.cjs __tests__/lockfile.js __tests__/package-compatibility.js __tests__/normalize-manifest.js __tests__/package-hoister.js __tests__/package-request.js __tests__/package-resolver.js __tests__/rc.js __tests__/registries __tests__/resolvers __tests__/util",
     "test:package": "node scripts/test-package.mjs",
     "test:cli": "node test/stackline.cjs",
-    "test:security": "node test/archive-security.cjs"
+    "test:security": "node test/archive-security.cjs",
+    "audit:security": "node scripts/audit-reviewed.cjs"
   },
   "jest": {
     "collectCoverageFrom": [
@@ -140,5 +141,9 @@
     "npm-package",
     "yarn",
     "nodejs"
-  ]
+  ],
+  "overrides": {
+    "glob@>=9 <14.0.2": "^14.0.2",
+    "minimatch@>=7 <11.0.1": "^11.0.1"
+  }
 }

@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.3
+
+- Refresh locked dependencies and constrain affected modern glob/minimatch versions.
+- Use patched Node.js in CI and publication, and record raw audit findings separately from the reviewed registry-cache false positive.
+
 ## 1.0.0
 
 - Fork Yarn Classic 1.22.22 with upstream Git history, BSD license and notices.
